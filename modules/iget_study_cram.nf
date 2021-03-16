@@ -14,13 +14,17 @@ process 'iget_study_cram' {
 
   script:
     """
-iget --retries 5 -X local_restartFile --lfrestart local_lfRestartFile -K -f -v ${cram_irods_object} .
-rm local_restartFile || true
-rm local_lfRestartFile || true
+CRAM=\$(basename ${cram_irods_object})
+echo basename cram is \${CRAM}
+
+# get cram file, retry twice:
+iget -K -f -v ${cram_irods_object} .
+test -f \${CRAM} && sleep 10 && echo retry cram 1 && iget -K -f -v ${cram_irods_object} .
+test -f \${CRAM} && sleep 10 && echo retry cram 2 && iget -K -f -v ${cram_irods_object} .
 
 # get index file if exists:
-iget --retries 5 -X local_restartFile --lfrestart local_lfRestartFile -K -f -v ${cram_irods_object}.crai . || true
-rm local_restartFile || true
-rm local_lfRestartFile || true
+iget -K -f -v ${cram_irods_object}.crai . || true
+test -f \${CRAM}.crai && sleep 10 && echo retry cram.crai 1 && iget -K -f -v ${cram_irods_object}.crai || true
+test -f \${CRAM}.crai && sleep 10 && echo retry cram.crai 1 && iget -K -f -v ${cram_irods_object}.crai || true
    """
 }
