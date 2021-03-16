@@ -70,7 +70,7 @@ workflow.onComplete {
     if (params.on_complete_remove_workdir_failed_tasks) {
 	log.info "You have selected \"on_complete_remove_workdir_failed_tasks = true\"; will therefore remove work dirs of all tasks that failed (.exitcode file not 0)."
 	// work dir and other paths are hardcoded here ... :
-	def proc = "bash ${projectDir}/bin/del_work_dirs_failed.sh ${workDir}".execute()
+	def proc = "bash ${projectDir}/../bin/del_work_dirs_failed.sh ${workDir}".execute()
 	def b = new StringBuffer()
 	proc.consumeProcessErrorStream(b)
 	log.info proc.text
