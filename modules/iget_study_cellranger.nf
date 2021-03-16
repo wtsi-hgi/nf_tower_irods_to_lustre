@@ -16,6 +16,9 @@ process 'iget_study_cellranger' {
   script:
     """
 iget -K -r -v ${cellranger_irods_object} cellranger_${sample}
+rm local_restartFile || true
+rm local_lfRestartFile || true
+
 echo \"${cellranger_irods_object}\" > cellranger_${sample}/irods_cellranger_path.txt
 
 # parse cellranger output file hierarchy (it depends on cellranger version):
