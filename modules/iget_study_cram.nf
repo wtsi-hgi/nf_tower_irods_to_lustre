@@ -14,8 +14,13 @@ process 'iget_study_cram' {
 
   script:
     """
-iget -K -f -v ${cram_irods_object}
+iget --retries 5 -X local_restartFile --lfrestart local_lfRestartFile -K -f -v ${cram_irods_object} .
+rm local_restartFile || true
+rm local_lfRestartFile || true
+
 # get index file if exists:
-iget -K -f -v ${cram_irods_object}.crai || true
+iget --retries 5 -X local_restartFile --lfrestart local_lfRestartFile -K -f -v ${cram_irods_object}.crai . || true
+rm local_restartFile || true
+rm local_lfRestartFile || true
    """
 }
