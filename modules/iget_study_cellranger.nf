@@ -15,7 +15,7 @@ process 'iget_study_cellranger' {
 
   script:
     """
-iget -K -r -v ${cellranger_irods_object} cellranger_${sample}
+iget --retries 5 -X local_restartFile --lfrestart local_lfRestartFile -K -f -v  ${cellranger_irods_object} cellranger_${sample}
 rm local_restartFile || true
 rm local_lfRestartFile || true
 
