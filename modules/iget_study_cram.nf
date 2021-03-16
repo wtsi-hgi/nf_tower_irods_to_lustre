@@ -21,13 +21,18 @@ echo basename cram is \${CRAM}
 
 # get cram file, retry twice:
 iget -K -f -v ${cram_irods_object} .
+echo first iget done
+ls -ltra
 ! test -f \${CRAM} && sleep 10 && echo retry cram 1 && iget -K -f -v ${cram_irods_object} . || true
 ! test -f \${CRAM} && sleep 10 && echo retry cram 2 && iget -K -f -v ${cram_irods_object} . || true
 ! test -f \${CRAM} && echo get cram file failed && exit 1 || true
+echo all iget done
+ls -ltra
 
 # get index file if exists:
 iget -K -f -v ${cram_irods_object}.crai . || true
 ! test -f \${CRAM}.crai && sleep 10 && echo retry cram.crai 1 && iget -K -f -v ${cram_irods_object}.crai || true
 ! test -f \${CRAM}.crai && sleep 10 && echo retry cram.crai 1 && iget -K -f -v ${cram_irods_object}.crai || true
+echo script done
    """
 }
