@@ -15,9 +15,11 @@ process 'iget_study_cellranger' {
 
   script:
     """
-iget -K -f -v ${cellranger_irods_object} cellranger_${sample}
-test -d cellranger_${sample} && sleep 10 && echo retry cram 1 && iget -K -f -v ${cellranger_irods_object} cellranger_${sample}
-test -d cellranger_${sample} && sleep 10 && echo retry cram 1 && iget -K -f -v ${cellranger_irods_object} cellranger_${sample}
+echo pwd is \${PWD}
+
+iget -r -K -f -v ${cellranger_irods_object} cellranger_${sample}
+test -d cellranger_${sample} && sleep 10 && echo retry cellranger 1 && iget -r -K -f -v ${cellranger_irods_object} cellranger_${sample}
+test -d cellranger_${sample} && sleep 10 && echo retry cellranger 2 && iget -r -K -f -v ${cellranger_irods_object} cellranger_${sample}
 test -d cellranger_${sample} && echo get cellranger directory failed && exit 1 
 
 echo \"${cellranger_irods_object}\" > cellranger_${sample}/irods_cellranger_path.txt
