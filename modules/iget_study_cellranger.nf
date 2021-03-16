@@ -18,9 +18,13 @@ process 'iget_study_cellranger' {
 echo pwd is \${PWD}
 
 iget -r -K -f -v ${cellranger_irods_object} cellranger_${sample}
+echo first iget done
+ls -ltra
 ! test -d cellranger_${sample} && sleep 10 && echo retry cellranger 1 && iget -r -K -f -v ${cellranger_irods_object} cellranger_${sample} || true
 ! test -d cellranger_${sample} && sleep 10 && echo retry cellranger 2 && iget -r -K -f -v ${cellranger_irods_object} cellranger_${sample} || true
 ! test -d cellranger_${sample} && echo get cellranger directory failed && exit 1 || true 
+echo all iget done
+ls -ltra
 
 echo \"${cellranger_irods_object}\" > cellranger_${sample}/irods_cellranger_path.txt
 
@@ -44,6 +48,8 @@ cat cellranger_${sample}/metrics_summary.csv | $workflow.projectDir/../bin/remov
 paste -d, metadata1.csv metadata2.csv | tr ',' '\t' > ${sample}.metadata.tsv
 rm metadata1.csv 
 rm metadata2.csv 
+
+echo script done
    """
 }
 
