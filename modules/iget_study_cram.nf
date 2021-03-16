@@ -14,6 +14,8 @@ process 'iget_study_cram' {
 
   script:
     """
+echo pwd is \${PWD}
+
 CRAM=\$(basename ${cram_irods_object})
 echo basename cram is \${CRAM}
 
@@ -21,6 +23,7 @@ echo basename cram is \${CRAM}
 iget -K -f -v ${cram_irods_object} .
 test -f \${CRAM} && sleep 10 && echo retry cram 1 && iget -K -f -v ${cram_irods_object} .
 test -f \${CRAM} && sleep 10 && echo retry cram 2 && iget -K -f -v ${cram_irods_object} .
+test -f \${CRAM} && echo get cram file failed && exit 1
 
 # get index file if exists:
 iget -K -f -v ${cram_irods_object}.crai . || true
