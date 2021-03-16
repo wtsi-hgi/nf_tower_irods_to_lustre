@@ -15,9 +15,10 @@ process 'iget_study_cellranger' {
 
   script:
     """
-iget --retries 5 -X local_restartFile --lfrestart local_lfRestartFile -K -f -v  ${cellranger_irods_object} cellranger_${sample}
-rm local_restartFile || true
-rm local_lfRestartFile || true
+iget -K -f -v  ${cellranger_irods_object} cellranger_${sample}
+test -f cellranger_${sample} && sleep 10 && echo retry cram 1 && iget -K -f -v  ${cellranger_irods_object} cellranger_${sample}
+test -f cellranger_${sample} && sleep 10 && echo retry cram 1 && iget -K -f -v  ${cellranger_irods_object} cellranger_${sample}
+test -f cellranger_${sample} && echo get cram file failed && exit 1 
 
 echo \"${cellranger_irods_object}\" > cellranger_${sample}/irods_cellranger_path.txt
 
