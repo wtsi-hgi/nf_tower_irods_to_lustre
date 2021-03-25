@@ -11,7 +11,7 @@ process join_gsheet_metadata {
     val(file_paths_10x_tsv)
 
     output: 
-    path("${output_csv_name}"), emit: samples_csv
+    path("deconv_pipeline_input.tsv"), emit: samples_csv
     env(WORK_DIR), emit: work_dir_to_remove
 
     script:
