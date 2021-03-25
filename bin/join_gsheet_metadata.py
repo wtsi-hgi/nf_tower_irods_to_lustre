@@ -6,14 +6,14 @@ import logging
 from logdecorator import log_on_start, log_on_end, log_on_error, log_exception
 
 @click.command()
-@click.option('--creds_json', required=True, type=click.Path(exists=True), help='Google API credentials')
-@click.option('--gsheet', required=True, help='name of input Google spreadsheet')
-@click.option('--output_csv_name', required=True, help='path or name of output csv file')
+@click.option('--gsheet_csv', required=True, type=click.Path(exists=True), help='Google Spreadsheet converted to csv')
+@click.option('--cellranger_metadata_tsv', required=True, type=click.Path(exists=True), help='Cellranger and Irods metadata tsv table')
+@click.option('--file_paths_10x_tsv', required=True, type=click.Path(exists=True), help='tsv table of cellranger file paths')
 
 @log_on_start(logging.INFO, (
-    "\ncreds_json: {creds_json:s}\n"
-    + "gsheet: {gsheet:s}\n"
-    + "output_csv_name: {output_csv_name:s}"))
+    "\ngsheet_csv: {gsheet_csv:s}\n"
+    + "cellranger_metadata_tsv: {cellranger_metadata_tsv:s}\n"
+    + "file_paths_10x_tsv: {file_paths_10x_tsv:s}"))
 def gsheet_to_csv(creds_json, gsheet, output_csv_name):
     """Use google API and Service Account to convert google Spreadsheet to local csv file."""
     creds = ServiceAccountCredentials.from_json_keyfile_name(creds_json)
