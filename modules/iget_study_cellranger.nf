@@ -42,7 +42,7 @@ echo FILT_H5 is \$FILT_H5
 echo BAM_FILE is \$BAM_FILE
 
 # prepare metadata tsv row for that sample:
-echo sample_sanger_id,experiment_id,irods_cellranger_path > metadata1.csv 
+echo sanger_sample_id,experiment_id,irods_cellranger_path > metadata1.csv 
 echo ${sample},${sample},${cellranger_irods_object} >> metadata1.csv 
 cat cellranger_${sample}/metrics_summary.csv | $workflow.projectDir/../bin/remove_comma_inside_quotes.sh  > metadata2.csv
 paste -d, metadata1.csv metadata2.csv | tr ',' '\t' > ${sample}.metadata.tsv
