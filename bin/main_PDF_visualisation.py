@@ -18,12 +18,12 @@ def visualise_dataset(Data,plot_value,min_limit,max_limit):
     N = Data.__len__()
     for i in range(0,(max_number_of_entries-N)):
         Data=Data.append(pd.Series(), ignore_index=True)
-        Data.loc[Data.sample_sanger_id.isna(), 'sample_sanger_id'] = i*" "
+        Data.loc[Data.sanger_sample_id.isna(), 'sanger_sample_id'] = i*" "
     ind = np.arange(Data.__len__())  # the x locations for the groups
     plt.barh(ind, Data[plot_value],align='center', height=0.9)
     ax.set_yticks(ind)
     ax.set_xlim(min_limit, max_limit)
-    ax.set_yticklabels(Data["sample_sanger_id"])
+    ax.set_yticklabels(Data["sanger_sample_id"])
     ax.invert_yaxis()  # labels read top-to-bottom
     ax.set_xlabel(plot_value)
     # ax.set_title(plot_value)

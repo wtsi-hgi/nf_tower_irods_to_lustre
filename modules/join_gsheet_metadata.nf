@@ -1,17 +1,19 @@
 process join_gsheet_metadata {
-    tag "${gsheet}"
+    tag "${gsheet_csv}"
     publishDir "${params.outdir}/join_gsheet_metadata/", mode: 'copy', overwrite: true
     
     when: 
     params.google_spreadsheet_mode.run_join_gsheet_metadata
 
     input: 
-    val(gsheet_csv)
+    path(gsheet_csv)
     path(cellranger_metadata_tsv)
-    val(file_paths_10x_tsv)
+    path(file_paths_10x_tsv)
 
     output: 
-    path("deconv_pipeline_input.tsv"), emit: samples_csv
+    path("nf_fetch_all_samples_metadata.tsv"), emit: nf_fetch_all_samples_metadata_tsv
+    path("nf_fetch_samples_no_deconv.tsv"), emit: nf_fetch_samples_no_deconv_tsv
+    path("nf_fetch_samples_to_deconv.tsv"), emit: nf_fetch_samples_to_deconv_tsv
     env(WORK_DIR), emit: work_dir_to_remove
 
     script:
