@@ -30,21 +30,17 @@ params {
 	input_google_creds = "google_api_credentials.json" // file path to service account credentials json, must have been granted access to spreadsheet
 	output_csv_name = "Submission_Data_Pilot_UKB.csv" // name of sheet table converted to csv
 	input_gsheet_column = "SANGER SAMPLE ID" // column for Irods sample IDs to search.
-	run_join_gsheet_metadata = true // whether to run task to
-	                                // combine all samples tables (google spreadsheet, irods + cellranger metadata, cellranger /lustre file paths),
-	                                //   by joining on common sample column:
-	                                // the resulting combined tables can be fed directly as input to the Vireo deconvolution pipeline or QC pipeline.
     }
 
     // input parameters common to all input modes:
     run_imeta_samples = true // whether to run task to list all samples and cram from provided list of samples IDs from csv input table (created from google Spreadsheet).
-    run_imeta_study_cellranger = true // whether to run task to list all cellranger irods objects 
-    run_iget_study_cellranger = true // whether to run task to iget all samples cellranger irods objects
-    run_iget_study_cram = false // whether to run task to iget all samples cram files
+    run_imeta_study_cellranger = false // whether to run task to list all cellranger irods objects 
+    run_iget_study_cram = true // whether to run task to iget all samples cram files
+    run_iget_study_cellranger = false // whether to run task to iget all samples cellranger irods objects
     run_crams_to_fastq = false // whether to run task to merge and convert crams of each sample to fastq
-    run_metadata_visualisation = true //whether to visualise the fetched rellranger metadata.
+    run_metadata_visualisation=true //whether to visualise the fetched rellranger metadata.
     crams_to_fastq_min_reads = "1000" // minimum number of reads in merged cram file to try and convert to fastq.gz 
-    copy_mode = "rellink" // choose "rellink", "symlink", "move" or "copy" to stage in crams and cellranger data from work dir into results dir
+    copy_mode = "move" // choose "rellink", "symlink", "move" or "copy" to stage in crams and cellranger data from work dir into results dir
 
     // the following are for one-off tasks run after workflow completion to clean-up work dir:
     on_complete_uncache_irods_search = false // will remove work dir (effectively un-caching) of Irods search tasks that need to be rerun on next NF run even if completed successfully.
