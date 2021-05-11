@@ -17,6 +17,8 @@ include { run_from_irods_tsv } from './run_from_irods_tsv.nf'
 
 workflow {
 
+    log.info(params.toString())
+    
     if (params.run_mode == "study_id") {
 	imeta_study(Channel.from(params.study_id_mode.input_studies))
 	samples_irods_tsv = imeta_study.out.irods_samples_tsv
@@ -31,7 +33,7 @@ workflow {
     
     else if (params.run_mode == "google_spreadsheet") {
 	i1 = Channel.from(params.google_spreadsheet_mode.input_gsheet_name)
-	i2 = Channel.fromPath(params.google_spreadsheet_mode.input_sheet_name)
+	i2 = Channel.from(params.google_spreadsheet_mode.input_sheet_name)
 	i3 = Channel.fromPath(params.google_spreadsheet_mode.input_google_creds)
 	i4 = Channel.from(params.google_spreadsheet_mode.output_csv_name)
 	gsheet_to_csv(i1,i2,i3,i4)
