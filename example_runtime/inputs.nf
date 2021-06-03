@@ -26,7 +26,8 @@ params {
 	// mercury pipeline user must have been configured access to that spreadsheet.
 	// it needs to have a column name "sanger_sample_id" that matches Irods samples.
 	run_gsheet_to_csv = true // whether to run task to use google API and Service Account to convert google Spreadsheet with list of Irods samples IDs to local csv file.
-	input_gsheet_name = "Submission_Data_Pilot_UKB" // name of google sheet, service account below must be granted access to that spreadsheet.
+	input_gsheet_name = "Submission_Data_Pilot_UKB" // name of google spreadsheet, service account below must be granted access to that spreadsheet.
+	input_sheet_name = "Superloading_Exp3" // name of sheet if the spreadsheet has multiple sheets. Set to 'sheet1' for default.
 	input_google_creds = "google_api_credentials.json" // file path to service account credentials json, must have been granted access to spreadsheet
 	output_csv_name = "Submission_Data_Pilot_UKB.csv" // name of sheet table converted to csv
 	input_gsheet_column = "SANGER SAMPLE ID" // column for Irods sample IDs to search.
