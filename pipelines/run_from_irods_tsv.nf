@@ -68,12 +68,12 @@ workflow run_from_irods_tsv {
     // prepare Lelands' pipeline input
     // --file_metadata     Tab-delimited file containing sample metadata.
     if (params.run_mode == "google_spreadsheet") {
-      	file_paths_10x_name = params.google_spreadsheet_mode.
-      	input_gsheet_name.replaceAll(/ /, "_") + ".file_paths_10x.tsv"
-      	file_metadata_name = params.google_spreadsheet_mode.
-      	input_gsheet_name.replaceAll(/ /, "_") + ".file_metadata.tsv"
+      	file_paths_10x_name = params.google_spreadsheet_mode.input_gsheet_name.replaceAll(/ /, "_") + ".file_paths_10x.tsv"
+      	file_metadata_name = params.google_spreadsheet_mode.input_gsheet_name.replaceAll(/ /, "_") + ".file_metadata.tsv"
+      	raw_file_paths_10x_name = "raw." + "${file_paths_10x_name}"
     }else {
     	file_paths_10x_name = "file_paths_10x.tsv"
+    	file_paths_10x_name_raw = "raw.file_paths_10x.tsv"
       	file_metadata_name = "file_metadata.tsv" }
     
     iget_study_cellranger.out.cellranger_filtered_outputs
@@ -84,6 +84,15 @@ workflow run_from_irods_tsv {
   		     seed: "experiment_id\tdata_path_10x_format\tshort_experiment_id\tncells_expected\tndroplets_include_cellbender\tdata_path_barcodes\tdata_path_filt_h5\tdata_path_bam_file",
   		     storeDir:params.outdir)
 	.set { ch_file_paths_10x_tsv  }
+    
+    iget_study_cellranger.out.cellranger_raw_outputs
+  	.map{sample, raw10x_dir, raw_barcodes, raw_h5, bam ->
+  	"${sample}\t${raw10x_dir}\t${sample}\tNA\tNA\t${raw_barcodes}\t${raw_h5}\t${bam}"}
+  	.collectFile(name: raw_file_paths_10x_name,
+  		     newLine: true, sort: true,
+  		     seed: "experiment_id\tdata_path_10x_format\tshort_experiment_id\tncells_expected\tndroplets_include_cellbender\tdata_path_barcodes\tdata_path_raw_h5\tdata_path_bam_file",
+  		     storeDir:params.outdir)
+	.set { ch_file_paths_10x_tsv_raw  }
     
     
     iget_study_cellranger.out.cellranger_metadata_tsv
@@ -100,6 +109,7 @@ workflow run_from_irods_tsv {
     ch_work_dir_to_remove
     ch_cellranger_metadata_tsv
     ch_file_paths_10x_tsv
+    ch_file_paths_10x_tsv_raw
 }
 
 // TODO:  here or main.nf:   // store work dirs to remove into tsv file for onComplete removal.
