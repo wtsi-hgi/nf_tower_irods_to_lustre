@@ -18,7 +18,7 @@ def gsheet_to_csv(creds_json, gsheet, output_csv_name):
     """Use google API and Service Account to convert google Spreadsheet to local csv file."""
     creds = ServiceAccountCredentials.from_json_keyfile_name(creds_json)
     client = gspread.authorize(creds)
-    sheet = client.open(gsheet).sheet1
+    sheet = client.open(gsheet).worksheet("Connect_Valid")
     data = sheet.get_all_values()
     headers = data.pop(0)
     df = pd.DataFrame(data, columns=headers)
