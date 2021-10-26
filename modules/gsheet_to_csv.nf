@@ -6,9 +6,10 @@ process gsheet_to_csv {
     params.google_spreadsheet_mode.run_gsheet_to_csv
 
     input: 
-    val(gsheet)
-    path(creds_json)
-    val(output_csv_name)
+        val(gsheet)
+        path(creds_json)
+        val(output_csv_name)
+        val(sheet_name)
 
     output: 
     path("${output_csv_name}"), emit: samples_csv
@@ -17,9 +18,10 @@ process gsheet_to_csv {
     env(study_id), emit: study_id
 
     script:
+    log.info sheet_name
     """
     python3 $workflow.projectDir/../bin/google_spreadsheet_to_csv.py \\
-       --creds_json ${creds_json} --gsheet ${gsheet} --output_csv_name ${output_csv_name}
+       --creds_json ${creds_json} --gsheet ${gsheet} --output_csv_name ${output_csv_name} --sheet_name ${sheet_name}
 
     # Save work dir so that it can be removed onComplete of workflow, 
     # to ensure that this task Irods search is re-run on each run NF run, 

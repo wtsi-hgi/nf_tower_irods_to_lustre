@@ -33,7 +33,9 @@ workflow {
 	i1 = Channel.from(params.google_spreadsheet_mode.input_gsheet_name)
 	i2 = Channel.fromPath(params.google_spreadsheet_mode.input_google_creds)
 	i3 = Channel.from(params.google_spreadsheet_mode.output_csv_name)
-	gsheet_to_csv(i1,i2,i3)
+	i31 = Channel.from(params.google_spreadsheet_mode.input_sheet_name)
+	
+	gsheet_to_csv(i1,i2,i3,i31)
 	i4 = Channel.from(params.google_spreadsheet_mode.input_gsheet_column)
 	imeta_samples_csv(gsheet_to_csv.out.samples_csv, i4)
 	samples_irods_tsv = imeta_samples_csv.out.irods_samples_tsv
