@@ -73,7 +73,7 @@ workflow run_from_irods_tsv {
       	raw_file_paths_10x_name = "raw." + "${file_paths_10x_name}"
     }else {
     	file_paths_10x_name = "file_paths_10x.tsv"
-    	file_paths_10x_name_raw = "raw.file_paths_10x.tsv"
+    	raw_file_paths_10x_name = "raw.file_paths_10x.tsv"
       	file_metadata_name = "file_metadata.tsv" }
     
     iget_study_cellranger.out.cellranger_filtered_outputs
