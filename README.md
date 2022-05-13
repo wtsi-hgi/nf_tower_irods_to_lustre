@@ -1,6 +1,11 @@
-# nextflow_ci
+# nextflow_tower version
 
-This pipeline is ran by upstream Gitlab `nextflow_ci` HGI repo https://gitlab.internal.sanger.ac.uk/hgi-projects/nextflow_ci/-/tree/cellranger_sbw .
-It pulls cellranger data of @sbw experiments from google-spreadsheet list of *sanger_sample_ids*.     
-See `inputs.nf` in usptream repo.    
-See uptream repo branch `template` for instructions on how to run pipeline.
+This pipeline is designed to be run using Nextflow Tower but it should work as a standalone.
+
+The pipeline can accept various different inputs
+
+1. Study_id - get all CRAMS from a specific iRODS study based on its ID
+2. Study_id and Lane id - get all CRAMS from a specific iRODS lane in a study based on their  IDs
+3. csv_samples - will iget samples listed one-per-line in input file "samples.tsv"
+4. google_spreadsheet - will iget samples listed one-per-line in google spreadsheet
+

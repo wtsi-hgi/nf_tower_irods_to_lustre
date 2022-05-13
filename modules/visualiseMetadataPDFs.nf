@@ -14,7 +14,7 @@ process visualiseMetadata{
 
   """
   
-  python $workflow.projectDir/../bin/main_PDF_visualisation.py $my_channel
+  python $workflow.projectDir/bin/main_PDF_visualisation.py $my_channel
 
   """
 

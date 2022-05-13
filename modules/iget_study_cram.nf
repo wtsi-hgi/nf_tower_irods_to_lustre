@@ -1,6 +1,6 @@
 process 'iget_study_cram' {
     tag "$sample"
-    publishDir "${params.outdir}/iget_study_cram/${study_id}/${sample}/", mode: "${params.copy_mode}"
+    publishDir "${params.cram_output_dir}", mode: "${params.copy_mode}"
     
     when: 
     params.run_iget_study_cram
@@ -14,25 +14,8 @@ process 'iget_study_cram' {
 
   script:
     """
-echo pwd is \${PWD}
-
-CRAM=\$(basename ${cram_irods_object})
-echo basename cram is \${CRAM}
-
-# get cram file, retry twice:
-iget -K -f -v ${cram_irods_object} .
-echo first iget done
-ls -ltra
-! test -f \${CRAM} && sleep 10 && echo retry cram 1 && iget -K -f -v ${cram_irods_object} . || true
-! test -f \${CRAM} && sleep 10 && echo retry cram 2 && iget -K -f -v ${cram_irods_object} . || true
-! test -f \${CRAM} && echo get cram file failed && exit 1 || true
-echo all iget done
-ls -ltra
-
+iget -K -f -I -v ${cram_irods_object} ${sample}.cram
 # get index file if exists:
-iget -K -f -v ${cram_irods_object}.crai . || true
-! test -f \${CRAM}.crai && sleep 10 && echo retry cram.crai 1 && iget -K -f -v ${cram_irods_object}.crai || true
-! test -f \${CRAM}.crai && sleep 10 && echo retry cram.crai 1 && iget -K -f -v ${cram_irods_object}.crai || true
-echo script done
+iget -K -f -I -v ${cram_irods_object}.crai ${sample}.cram.crai || true
    """
 }

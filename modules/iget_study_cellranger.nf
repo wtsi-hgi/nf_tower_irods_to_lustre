@@ -54,7 +54,7 @@ echo RAW_H5 is \$RAW_H5
 # prepare metadata tsv row for that sample:
 echo sanger_sample_id,experiment_id,irods_cellranger_path > metadata1.csv 
 echo ${sample},${sample},${cellranger_irods_object} >> metadata1.csv 
-cat cellranger_${sample}/metrics_summary.csv | $workflow.projectDir/../bin/remove_comma_inside_quotes.sh  > metadata2.csv
+cat cellranger_${sample}/metrics_summary.csv | $workflow.projectDir/bin/remove_comma_inside_quotes.sh  > metadata2.csv
 paste -d, metadata1.csv metadata2.csv | tr ',' '\t' > ${sample}.metadata.tsv
 rm metadata1.csv 
 rm metadata2.csv 
