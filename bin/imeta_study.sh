@@ -18,4 +18,13 @@ jq '.[] as $a|
     sed s"/____/$(printf '\t')/"g |\
 sort | uniq >> samples.tsv
 
-echo jq search study id done
+sample_num=$(awk '{if ($1 != "sample")print$1}' samples.tsv | uniq | wc -l)
+let file_num=$(awk '{if ($2 != "object")print$2}' samples.tsv | sed 's/\.[crb]\+am//' | uniq | wc -l) 
+
+if [[ $file_num != $sample_num ]] 
+   then
+      echo There are more files than samples, best not to use run_study_id to download
+      exit 1
+   else
+      echo jq search study id done
+fi
