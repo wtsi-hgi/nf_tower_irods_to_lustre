@@ -25,6 +25,15 @@ workflow run_from_irods_tsv {
 	        .take(params.samples_to_process)
 	        .unique())
     }
+    else if (params.run_mode == "csv_samples_id") {
+        iget_study_cram(
+            channel_samples_tsv
+                .splitCsv(header: true, sep: '\t')
+                .map{row->tuple(row.study_id, row.sample, row.object)}
+                .filter { it[2] =~ /.cram$/ } // Need to check for bam too?
+                .take(params.samples_to_process)
+                .unique())
+    }
     else {
         // task to merge cram files of each sample and convert them to fastq
         // merge by study_id and sample (Irods sanger_sample_id)
