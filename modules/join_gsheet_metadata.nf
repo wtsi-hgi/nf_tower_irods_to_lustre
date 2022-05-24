@@ -18,7 +18,7 @@ process join_gsheet_metadata {
 
     script:
     """
-    python3 $workflow.projectDir/../bin/join_gsheet_metadata.py \\
+    python3 $workflow.projectDir/bin/join_gsheet_metadata.py \\
        --gsheet_csv ${gsheet_csv} \\
        --cellranger_metadata_tsv ${cellranger_metadata_tsv} \\
        --file_paths_10x_tsv ${file_paths_10x_tsv}

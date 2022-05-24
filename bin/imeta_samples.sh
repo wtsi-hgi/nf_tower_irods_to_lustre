@@ -5,7 +5,7 @@ export column_samples=$2
 echo input csv table is $input_csv
 echo column samples is $column_samples
 
-export samples_json_array=$(csvcut -c "$column_samples" $input_csv | \
+export samples_json_array=$(awk -v column_val="$column_samples" '{ if (NR==1) {val=-1; for(i=1;i<=NF;i++) { if ($i == column_val) {val=i;}}} if(val != -1 && NR!=1) print $val} '$input_csv | \
 				sed 1d | uniq | jq -R -s -c 'split("\n")[:-1]')
 echo samples_json_array is $samples_json_array
 

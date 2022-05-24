@@ -20,7 +20,7 @@ process gsheet_to_csv {
     script:
     log.info sheet_name
     """
-    python3 $workflow.projectDir/../bin/google_spreadsheet_to_csv.py \\
+    python3 $workflow.projectDir/bin/google_spreadsheet_to_csv.py \\
        --creds_json ${creds_json} --gsheet ${gsheet} --output_csv_name ${output_csv_name} --sheet_name ${sheet_name}
 
     # Save work dir so that it can be removed onComplete of workflow, 

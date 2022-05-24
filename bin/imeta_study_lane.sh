@@ -1,15 +1,24 @@
 #!/usr/bin/env bash
 study_id=$1
 
+
+id_run=$(echo $2 | sed 's/,/","/' | sed 's/^/"/' | sed 's/$/"/')
+#echo $id_run
+
 rm -f samples.tsv
 
 printf 'sample\tobject\tsample_supplier_name\tid_run\tis_paired_read\tstudy_id\tstudy\n' > samples.tsv
 
-jq --arg study_id $study_id -n '{avus: [
-       {attribute: "target", value: "1", o: "="}, 
-       {attribute: "manual_qc", value: "1", o: "="}, 
-       {attribute: "type", value: ["cram","bam"], o: "in"}, 
-      {attribute: "study_id", value: $study_id, o: "="}]}' |\
+#jq --arg study_id $study_id --arg id_run $id_run -n '{avus: [
+
+#echo "jq -n  \"{avus: [{attribute: \"type\", value: \"cram\", o: \"=\"},{attribute: \"manual_qc\", value: \"1\", o: \"=\"},{attribute: \"target\", value: \"1\", o: \"=\"},{attribute: \"id_run\", value: [$id_run], o: \"in\"},{attribute: \"study_id\", value: \"$study_id\", o: \"=\"}]}\" baton-metaquery --zone seq --obj --avu | jq '.[]' "
+
+jq -n  "{avus: [
+       {attribute: \"type\", value: \"cram\", o: \"=\"}, 
+       {attribute: \"manual_qc\", value: \"1\", o: \"=\"}, 
+      {attribute: \"target\", value: \"1\", o: \"=\"},
+      {attribute: \"id_run\", value: [$id_run], o: \"in\"},
+      {attribute: \"study_id\", value: \"$study_id\", o: \"=\"}]}" |\
 /software/sciops/pkgg/baton/2.0.1+1da6bc5bd75b49a2f27d449afeb659cf6ec1b513/bin/baton-metaquery \
 		--zone seq --obj --avu |\
 jq '.[] as $a| 
@@ -19,13 +28,4 @@ jq '.[] as $a|
     sed s"/____/$(printf '\t')/"g |\
 sort | uniq >> samples.tsv
 
-sample_num=$(awk '{if ($1 != "sample")print$1}' samples.tsv | uniq | wc -l)
-let file_num=$(awk '{if ($2 != "object")print$2}' samples.tsv | sed 's/\.[crb]\+am//' | uniq | wc -l) 
-
-if [[ $file_num != $sample_num ]] 
-   then
-      echo There are more files than samples, best not to use run_study_id to download
-      exit 1
-   else
-      echo jq search study id done
-fi
+echo jq search study_id + id_run done

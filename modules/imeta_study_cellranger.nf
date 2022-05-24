@@ -16,7 +16,7 @@ process imeta_study_cellranger {
 
     script:
     """
-    bash $workflow.projectDir/../bin/imeta_study_cellranger.sh ${sample} ${run_id}
+    bash $workflow.projectDir/bin/imeta_study_cellranger.sh ${sample} ${run_id}
     if [ -f cellranger.object.txt ] 
     then 
         echo file cellranger.object.txt found

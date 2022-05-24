@@ -20,7 +20,7 @@ process imeta_samples_csv {
 
     script:
     """
-    bash $workflow.projectDir/../bin/imeta_samples.sh $input_csv \"$irods_sample_column\"
+    bash $workflow.projectDir/bin/imeta_samples.sh $input_csv \"$irods_sample_column\"
     awk '!a[\$1]++' samples.tsv > samples_noduplicates.tsv 
 
     # Save work dir so that it can be removed onComplete of workflow, 
