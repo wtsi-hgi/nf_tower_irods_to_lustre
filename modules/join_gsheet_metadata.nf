@@ -3,7 +3,7 @@ process join_gsheet_metadata {
     publishDir "${params.outdir}/join_gsheet_metadata/", mode: 'copy', overwrite: true
     
     when: 
-    params.google_spreadsheet_mode.run_join_gsheet_metadata
+    params.run_join_gsheet_metadata
 
     input: 
     path(gsheet_csv)

@@ -3,7 +3,7 @@ process gsheet_to_csv {
     publishDir "${params.outdir}/", mode: 'copy', pattern: "${output_csv_name}", overwrite: true
     
     when: 
-    params.google_spreadsheet_mode.run_gsheet_to_csv
+    params.run_gsheet_to_csv
 
     input: 
         val(gsheet)
