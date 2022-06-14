@@ -32,12 +32,19 @@
                     "default": ["1891"],
                     "fa_icon": "fas fa-angle-double-right"
                 },
-                "csv_samples_id_mode": {
+                "input_samples_csv": {
                     "type": "string",
                     "description": "TSV with samples and iRODS path",
                     "default": "${projectDir}/example_runtime/sample.tsv",
                     "fa_icon": "fas fa-code"
                 },
+                "input_samples_csv_column": {
+                    "type": "string",
+                    "description": "column label with sample name",
+                    "default": "sample",
+                    "fa_icon": "fas fa-code"
+                },
+
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
