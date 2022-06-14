@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/./master/nextflow_schema.json",
-    "title": "Copy CRAMs from iRODS to lustre",
+    "title": "Download CRAMs from iRODS to lustre",
     "description": "",
     "type": "object",
     "definitions": {
@@ -18,26 +18,25 @@
                 "run_mode": {
                     "type": "string",
                     "default": "csv_samples_id",
-                    "description": "Options are study_id or csv_samples_id or google_spreadsheet.",
                     "fa_icon": "fas fa-angle-double-right"
                 },
-                "properties": {
                 "run_imeta_study": {
                     "type": "string",                    
                     "description": "true = run module, false = ignore",
                     "default": "false",
                     "fa_icon": "fas fa-angle-double-right"
-                    },
+                },
                 "input_studies": {
-                    "type": "array",
+                    "type": "integer",
                     "description": "one or more study_ids to get CRAM files",
                     "default": ["1891"],
                     "fa_icon": "fas fa-angle-double-right"
-                    },
                 },
-                "cpus": {
-                    "type": "integer",
-                    "description": "Number of CPUs to use."
+                "csv_samples_id_mode": {
+                    "type": "string",
+                    "description": "TSV with samples and iRODS path",
+                    "default": "${projectDir}/example_runtime/sample.tsv",
+                    "fa_icon": "fas fa-code"
                 },
                 "outdir": {
                     "type": "string",
