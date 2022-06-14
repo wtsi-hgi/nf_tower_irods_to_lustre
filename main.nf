@@ -24,7 +24,7 @@ workflow {
 	work_dir_to_remove = imeta_study.out.work_dir_to_remove }
     
     else if (params.run_mode == "csv_samples_id") {
-        samples_irods_tsv = Channel.fromPath(params.csv_samples_id_mode.input_samples_csv)
+        samples_irods_tsv = Channel.fromPath(params.input_samples_csv)
          }
     
     else if (params.run_mode == "google_spreadsheet") {
