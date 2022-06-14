@@ -16,7 +16,7 @@
             ],
             "properties": {
                 "samples_to_process": {
-                    "type": "integer",
+                    "type": "number",
                     "default": "1",
                     "fa_icon": "fas fa-angle-double-right"
                 },
