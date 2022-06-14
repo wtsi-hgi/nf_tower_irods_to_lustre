@@ -15,6 +15,11 @@
                 "outdir"
             ],
             "properties": {
+                "samples_to_process": {
+                    "type": "interger",
+                    "default": "1",
+                    "fa_icon": "fas fa-angle-double-right"
+                },
                 "run_mode": {
                     "type": "string",
                     "default": "csv_samples_id",
