@@ -15,14 +15,14 @@
                 "outdir"
             ],
             "properties": {
-                "samples_to_process": {
-                    "type": "number",
-                    "default": "1",
-                    "fa_icon": "fas fa-angle-double-right"
-                },
                 "run_mode": {
                     "type": "string",
                     "default": "csv_samples_id",
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "samples_to_process": {
+                    "type": "integer",
+                    "default": "1",
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "run_imeta_study": {
