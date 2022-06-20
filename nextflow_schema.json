@@ -59,6 +59,21 @@
                     "default": "${projectDir}/outdir",
                     "fa_icon": "fas fa-folder-open"
                 },
+                "cram_output_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The directory where the CRAM files will be copied, from the work directory. You have to use absolute paths ",
+                    "default": "${projectDir}/outdir/crams",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "reportdir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The directory where the pipeline reports will be saved. You have to use absolute paths",
+                    "default": "${projectDir}/outdir",
+                    "fa_icon": "fas fa-folder-open"
+                },
+
                 "singularity_use_pre_cached_images": {
                     "type": "boolean",
                     "description": "Decide to use or not cached images",
