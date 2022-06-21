@@ -18,7 +18,7 @@
                 "run_mode": {
                     "type": "string",
                     "default": "csv_samples_id",
-                    "description": "Choose between csv_samples_id(file of iRODS paths),study_id(one or more iRODS study_ids",
+                    "description": "Choose between csv_samples_id(file of iRODS paths),study_id(one or more iRODS study_ids)",
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "samples_to_process": {
@@ -29,25 +29,25 @@
                 },
                 "run_imeta_study": {
                     "type": "string",                    
-                    "description": "true = run module, false = ignore",
+                    "description": "Set to true if run_mode is study_id otherwise set to false",
                     "default": "false",
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "input_studies": {
                     "type": "integer",
-                    "description": "one or more study_ids to get CRAM files",
-                    "default": ["1891"],
+                    "description": "one or more study_ids to get CRAM files, will fail if multiple CRAMS per sample",
+                    "default": ["3342"],
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "input_samples_csv": {
                     "type": "string",
-                    "description": "TSV with samples and iRODS path",
+                    "description": "TSV with samples and iRODS path, required for csv_samples_id mode, otherwise leave as default, which shows format",
                     "default": "${projectDir}/example_runtime/sample.tsv",
                     "fa_icon": "fas fa-code"
                 },
                 "input_samples_csv_column": {
                     "type": "string",
-                    "description": "column label with sample name",
+                    "description": "column header label with sample name",
                     "default": "sample",
                     "fa_icon": "fas fa-code"
                 },
@@ -55,7 +55,7 @@
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
-                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+                    "description": "The output directory where the results will be saved. You have to use absolute paths.",
                     "default": "${projectDir}/outdir",
                     "fa_icon": "fas fa-folder-open"
                 },
