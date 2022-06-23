@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# to expand errors during the piping process 
+set -e
+set -o pipefail
+
 study_id=$1
 
 rm -f samples.tsv

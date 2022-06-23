@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# to expand errors during the piping process 
+set -e
+set -o pipefail
 
 export input_csv=$1
 export column_samples=$2

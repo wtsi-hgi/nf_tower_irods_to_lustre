@@ -1,4 +1,7 @@
 #!/bin/bash
+# to expand errors during the piping process 
+set -e
+set -o pipefail
 
 if [ $# -ne 1 ]; then
     echo $0: usage: bash baton.sh study_id
