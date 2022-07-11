@@ -71,7 +71,7 @@
                     "type": "string",
                     "format": "directory-path",
                     "description": "The directory where the pipeline reports will be saved. You have to use absolute paths",
-                    "default": "./outdir",
+                    "default": "./outdir/reports",
                     "fa_icon": "fas fa-folder-open"
                 },
 
