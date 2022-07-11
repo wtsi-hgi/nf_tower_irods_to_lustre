@@ -15,8 +15,6 @@ process imeta_study_lane {
 
     script:
     """    
-    #!/usr/bin/env bash
-
     id_run=$(echo \${lane_id} | sed 's/,/","/' | sed 's/^/"/' | sed 's/$/"/')
     #echo $id_run
 
