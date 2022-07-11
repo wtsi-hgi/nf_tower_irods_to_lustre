@@ -7,6 +7,7 @@ nextflow.enable.dsl=2
 
 // import modules that depend on input mode:
 include { imeta_study } from './modules/imeta_study.nf'
+include { imeta_study_lane } from './modules/imeta_study_lane.nf'
 include { imeta_samples_csv } from './modules/imeta_samples_csv.nf'
 include { gsheet_to_csv } from './modules/gsheet_to_csv.nf'
 // module specific to google_spreadsheet input mode:
