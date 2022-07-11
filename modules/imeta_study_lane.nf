@@ -15,8 +15,8 @@ process imeta_study_lane {
 
     script:
     """    
-    id_run=$(echo \${lane_id} | sed 's/,/","/' | sed 's/^/"/' | sed 's/$/"/')
-    #echo $id_run
+    id_run=echo \${lane_id} | sed 's/,/","/' | sed 's/^/"/' | sed 's/$/"/'
+    echo "id_run: "$id_run
 
     rm -f samples.tsv
 
