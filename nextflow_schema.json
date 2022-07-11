@@ -63,7 +63,7 @@
                     "type": "string",
                     "format": "directory-path",
                     "description": "The directory where the CRAM files will be copied, from the work directory. You have to use absolute paths ",
-                    "default": "${projectDir}/outdir/crams",
+                    "default": "${workDir}/outdir/crams",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "reportdir": {
