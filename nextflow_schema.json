@@ -19,7 +19,7 @@
                     "type": "array",
                     "items": {
                         "type": "string",
-                        "enum": ["csv_samples_id", "study_id"]
+                        "enum": ["one", "two", "three"]
                     },
                     "description": "Choose between csv_samples_id(file of iRODS paths),study_id(one or more iRODS study_ids)",
                     "fa_icon": "fas fa-angle-double-right"
