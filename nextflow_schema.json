@@ -19,10 +19,6 @@
                     "type": "array",
                     "default": "csv_samples_id",
                     "description": "Choose between csv_samples_id(file of iRODS paths),study_id(one or more iRODS study_ids)",
-                    "lista": {
-                        "type": "string",
-                        "enum": ["csv_samples_id", "study_id"]
-                    },
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "samples_to_process": {
