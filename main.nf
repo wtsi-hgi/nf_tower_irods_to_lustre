@@ -19,9 +19,17 @@ include { run_from_irods_tsv } from './modules/run_from_irods_tsv.nf'
 workflow {
 
     if (params.run_mode == "study_id") {
-	imeta_study(Channel.from(params.input_studies))
-	samples_irods_tsv = imeta_study.out.irods_samples_tsv
-	work_dir_to_remove = imeta_study.out.work_dir_to_remove }
+        if (params.input_study_lanes) {
+	    imeta_study_lane( [params.input_studies, params.input_study_lanes] )
+            samples_irods_tsv = imeta_study_lane.out.irods_samples_tsv
+            work_dir_to_remove = imeta_study_lane.out.work_dir_to_remove
+        }
+        else{    
+	    imeta_study(Channel.from(params.input_studies))
+	    samples_irods_tsv = imeta_study.out.irods_samples_tsv
+	    work_dir_to_remove = imeta_study.out.work_dir_to_remove 
+	}
+    }
     
     else if (params.run_mode == "csv_samples_id") {
         samples_irods_tsv = Channel.fromPath(params.input_samples_csv)
