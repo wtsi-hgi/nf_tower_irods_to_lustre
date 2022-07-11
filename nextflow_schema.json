@@ -57,21 +57,21 @@
                     "type": "string",
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths.",
-                    "default": "./outdir",
+                    "default": "${projectDir}/outdir",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "cram_output_dir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The directory where the CRAM files will be copied, from the work directory. You have to use absolute paths ",
-                    "default": "./outdir/crams",
+                    "default": "${projectDir}/outdir/crams",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "reportdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The directory where the pipeline reports will be saved. You have to use absolute paths",
-                    "default": "./outdir/reports",
+                    "default": "${projectDir}/outdir/reports",
                     "fa_icon": "fas fa-folder-open"
                 },
 
