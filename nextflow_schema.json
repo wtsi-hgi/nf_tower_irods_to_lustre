@@ -19,7 +19,7 @@
                     "type": "array",
                     "default": "csv_samples_id",
                     "description": "Choose between csv_samples_id(file of iRODS paths),study_id(one or more iRODS study_ids)",
-                    "run_mode": {
+                    "lista": {
                         "type": "string",
                         "enum": ["csv_samples_id", "study_id"]
                     },
