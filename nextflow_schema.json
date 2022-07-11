@@ -16,8 +16,11 @@
             ],
             "properties": {
                 "run_mode": {
-                    "type": "string",
-                    "default": "csv_samples_id",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": ["csv_samples_id", "study_id"]
+                    },
                     "description": "Choose between csv_samples_id(file of iRODS paths),study_id(one or more iRODS study_ids)",
                     "fa_icon": "fas fa-angle-double-right"
                 },
@@ -56,21 +59,21 @@
                     "type": "string",
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths.",
-                    "default": "${projectDir}/outdir",
+                    "default": "./outdir",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "cram_output_dir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The directory where the CRAM files will be copied, from the work directory. You have to use absolute paths ",
-                    "default": "${workDir}/outdir/crams",
+                    "default": "./outdir/crams",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "reportdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The directory where the pipeline reports will be saved. You have to use absolute paths",
-                    "default": "${projectDir}/outdir",
+                    "default": "./outdir",
                     "fa_icon": "fas fa-folder-open"
                 },
 
