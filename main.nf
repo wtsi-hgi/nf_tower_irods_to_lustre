@@ -25,21 +25,21 @@ if (params.header) {
 log.info """\
                 nf iRods to Lustre - HGI
          ======================================="
-         run mode                                       : ${params.run_mode}
-         input_study_lanes                              : ${params.input_study_lanes}
+         run mode                           : ${params.run_mode}
+         input_study_lanes                  : ${params.input_study_lanes}
          input_studies       				: ${params.input_studies}
-         input_samples_csv                              : ${params.input_samples_csv}
+         input_samples_csv                  : ${params.input_samples_csv}
 	 
-	 input_gsheet_name				: ${params.input_gsheet_name}
-	 input_google_creds				: ${params.input_google_creds}
-	 output_csv_name				: ${params.output_csv_name}
-	 input_sheet_name				: ${params.input_sheet_name}
+		input_gsheet_name					: ${params.input_gsheet_name}
+		input_google_creds					: ${params.input_google_creds}
+		output_csv_name						: ${params.output_csv_name}
+		input_sheet_name					: ${params.input_sheet_name}
+		
+		samples_to_process					: ${params.samples_to_process}
 	 
-	 samples_to_process				: ${params.samples_to_process}
-	 
-         Name of outdir dir (DIRECTORY)                 : ${params.outdir}
-	 output CRAMS dir (DIRECTORY)                 	: ${params.cram_output_dir}
-	 output reports dir (DIRECTORY)                 : ${params.reportdir}
+        Name of outdir dir (DIRECTORY)      : ${params.outdir}
+		output CRAMS dir (DIRECTORY)        : ${params.cram_output_dir}
+		output reports dir (DIRECTORY)      : ${params.reportdir}
          """
          .stripIndent()
  }
@@ -47,34 +47,46 @@ log.info """\
 workflow {
 
     if (params.run_mode == "study_id") {
+		log.info "if -> params.run_mode : ${params.run_mode}"
         if (params.input_study_lanes) {
-	    imeta_study_lane( [params.input_studies, params.input_study_lanes] )
+			log.info "if -> params.input_study_lanes : ${params.input_study_lanes}"
+	    	imeta_study_lane( [params.input_studies, params.input_study_lanes] )
             samples_irods_tsv = imeta_study_lane.out.irods_samples_tsv
             work_dir_to_remove = imeta_study_lane.out.work_dir_to_remove
         }
-        else{    
-	    imeta_study(Channel.from(params.input_studies))
-	    samples_irods_tsv = imeta_study.out.irods_samples_tsv
-	    work_dir_to_remove = imeta_study.out.work_dir_to_remove 
-	}
+        else{
+			log.info "else -> params.input_study_lanes : ${params.input_study_lanes}"    
+			imeta_study(Channel.from(params.input_studies))
+			samples_irods_tsv = imeta_study.out.irods_samples_tsv
+			work_dir_to_remove = imeta_study.out.work_dir_to_remove 
+		}
+    }
+
+    else if (params.run_mode == "csv_samples_id") {
+		log.info "else -> params.run_mode : ${params.run_mode}"
+		log.info "params.input_samples_csv : ${params.input_samples_csv}"
+        samples_irods_tsv = Channel.fromPath(params.input_samples_csv)
     }
     
-    else if (params.run_mode == "csv_samples_id") {
-        samples_irods_tsv = Channel.fromPath(params.input_samples_csv)
-         }
-    
     else if (params.run_mode == "google_spreadsheet") {
-	i1 = Channel.from(params.input_gsheet_name)
-	i2 = Channel.fromPath(params.input_google_creds)
-	i3 = Channel.from(params.output_csv_name)
-	i31 = Channel.from(params.input_sheet_name)
-	
-	gsheet_to_csv(i1,i2,i3,i31)
-	i4 = Channel.from(params.google_spreadsheet_mode.input_gsheet_column)
-	imeta_samples_csv(gsheet_to_csv.out.samples_csv, i4)
-	samples_irods_tsv = imeta_samples_csv.out.irods_samples_tsv
-	work_dir_to_remove = imeta_samples_csv.out.work_dir_to_remove.mix(gsheet_to_csv.out.work_dir_to_remove) }
-
+		log.info "else2 -> params.run_mode : ${params.run_mode}"
+		log.info "params.input_gsheet_name : ${params.input_gsheet_name}"
+		log.info "params.input_google_creds : ${params.input_google_creds}"
+		log.info "params.output_csv_name : ${params.output_csv_name}"
+		log.info "params.input_sheet_name : ${params.input_sheet_name}"
+		i1 = Channel.from(params.input_gsheet_name)
+		i2 = Channel.fromPath(params.input_google_creds)
+		i3 = Channel.from(params.output_csv_name)
+		i31 = Channel.from(params.input_sheet_name)
+		
+		gsheet_to_csv(i1,i2,i3,i31)
+		log.info "params.google_spreadsheet_mode.input_gsheet_column : ${params.google_spreadsheet_mode.input_gsheet_column}"
+		i4 = Channel.from(params.google_spreadsheet_mode.input_gsheet_column)
+		imeta_samples_csv(gsheet_to_csv.out.samples_csv, i4)
+		samples_irods_tsv = imeta_samples_csv.out.irods_samples_tsv
+		work_dir_to_remove = imeta_samples_csv.out.work_dir_to_remove.mix(gsheet_to_csv.out.work_dir_to_remove) 
+	}
+	log.info "common -> samples_irods_tsv: ${samples_irods_tsv}"
     // common to all input modes:
     run_from_irods_tsv(samples_irods_tsv)
 
@@ -87,12 +99,13 @@ workflow {
     //		     storeDir:params.outdir)
 
     if (params.run_mode == "google_spreadsheet") {
-	// combine all samples tables (google spreadsheet, irods + cellranger metadata, cellranger /lustre file paths),
-	//   by joining on common sample column:
-	// the resulting combined tables can be fed directly as input to the Vireo deconvolution pipeline or QC pipeline.
-	join_gsheet_metadata(gsheet_to_csv.out.samples_csv,
-			     run_from_irods_tsv.out.ch_cellranger_metadata_tsv,
-			     run_from_irods_tsv.out.ch_file_paths_10x_tsv)
+		log.info "else22 -> params.run_mode : ${params.run_mode}"
+		// combine all samples tables (google spreadsheet, irods + cellranger metadata, cellranger /lustre file paths),
+		//   by joining on common sample column:
+		// the resulting combined tables can be fed directly as input to the Vireo deconvolution pipeline or QC pipeline.
+		join_gsheet_metadata(gsheet_to_csv.out.samples_csv,
+					run_from_irods_tsv.out.ch_cellranger_metadata_tsv,
+					run_from_irods_tsv.out.ch_file_paths_10x_tsv)
     }
 }
 
