@@ -1,0 +1,7 @@
+reports:
+  report.html:
+    display: "Report to download"
+  trace.txt:
+    display: "Trace report"
+  dag.dot:
+    display: "Dag graph"
