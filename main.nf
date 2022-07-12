@@ -25,10 +25,10 @@ if (params.header) {
 log.info """\
                 nf iRods to Lustre - HGI
          ======================================="
-         run mode                           : ${params.run_mode}
-         input_study_lanes                  : ${params.input_study_lanes}
-         input_studies       				: ${params.input_studies}
-         input_samples_csv                  : ${params.input_samples_csv}
+		run mode                           : ${params.run_mode}
+		input_study_lanes                  : ${params.input_study_lanes}
+		input_studies       				: ${params.input_studies}
+		input_samples_csv                  : ${params.input_samples_csv}
 	 
 		input_gsheet_name					: ${params.input_gsheet_name}
 		input_google_creds					: ${params.input_google_creds}
@@ -50,12 +50,14 @@ workflow {
 		log.info "if -> params.run_mode : ${params.run_mode}"
         if (params.input_study_lanes) {
 			log.info "if -> params.input_study_lanes : ${params.input_study_lanes}"
+			log.info "imeta_study_lane : ${params.input_studies} - ${params.input_study_lanes}"
 	    	imeta_study_lane( [params.input_studies, params.input_study_lanes] )
             samples_irods_tsv = imeta_study_lane.out.irods_samples_tsv
             work_dir_to_remove = imeta_study_lane.out.work_dir_to_remove
         }
         else{
-			log.info "else -> params.input_study_lanes : ${params.input_study_lanes}"    
+			log.info "else -> params.input_study_lanes : ${params.input_study_lanes}"  
+			log.info "imeta_study : ${params.input_studies}"   
 			imeta_study(Channel.from(params.input_studies))
 			samples_irods_tsv = imeta_study.out.irods_samples_tsv
 			work_dir_to_remove = imeta_study.out.work_dir_to_remove 
@@ -82,11 +84,12 @@ workflow {
 		gsheet_to_csv(i1,i2,i3,i31)
 		log.info "params.google_spreadsheet_mode.input_gsheet_column : ${params.google_spreadsheet_mode.input_gsheet_column}"
 		i4 = Channel.from(params.google_spreadsheet_mode.input_gsheet_column)
+		log.info "imeta_samples_csv: ${gsheet_to_csv.out.samples_csv} - ${i4}"
 		imeta_samples_csv(gsheet_to_csv.out.samples_csv, i4)
 		samples_irods_tsv = imeta_samples_csv.out.irods_samples_tsv
 		work_dir_to_remove = imeta_samples_csv.out.work_dir_to_remove.mix(gsheet_to_csv.out.work_dir_to_remove) 
 	}
-	log.info "common -> samples_irods_tsv: ${samples_irods_tsv}"
+	log.info "common -> run_from_irods_tsv(samples_irods_tsv) : ${samples_irods_tsv}"
     // common to all input modes:
     run_from_irods_tsv(samples_irods_tsv)
 
@@ -103,6 +106,7 @@ workflow {
 		// combine all samples tables (google spreadsheet, irods + cellranger metadata, cellranger /lustre file paths),
 		//   by joining on common sample column:
 		// the resulting combined tables can be fed directly as input to the Vireo deconvolution pipeline or QC pipeline.
+		log.info "join_gsheet_metadata"
 		join_gsheet_metadata(gsheet_to_csv.out.samples_csv,
 					run_from_irods_tsv.out.ch_cellranger_metadata_tsv,
 					run_from_irods_tsv.out.ch_file_paths_10x_tsv)
