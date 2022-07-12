@@ -42,15 +42,15 @@ process imeta_study_lane {
         select(.attribute == "is_paired_read") | .value)____($a.avus | .[] | \
         select(.attribute == "study_id") | .value)____($a.avus | .[] | \
         select(.attribute == "study") | .value)"' | \
-    sed s"/$(printf '\t')//"g |\
+    sed s"$(printf '\t')//"g |\
     sed s"/\"//"g |\
-    sed s"/____/$(printf '\t')/"g |\
+    sed s"/____$(printf '\t')/"g |\
     sort | uniq >> samples.tsv
 
     echo jq search study_id + id_run done
 
 
-    awk '!a[\${study_id}]++' samples.tsv > samples_noduplicates.tsv 
+    awk '!a[${study_id}]++' samples.tsv > samples_noduplicates.tsv 
 
     # Save work dir so that it can be removed onComplete of workflow, 
     # to ensure that this task Irods search is re-run on each run NF run, 
