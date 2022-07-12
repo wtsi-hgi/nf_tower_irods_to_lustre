@@ -15,7 +15,7 @@ process imeta_study_lane {
 
     script:
     """
-    bash $workflow.projectDir/nf_deepvariant/bin/imeta_study_lane.sh ${study_id} ${lane_id}
+    bash $workflow.projectDir/bin/imeta_study_lane.sh ${study_id} ${lane_id}
     awk '!a[\$1]++' samples.tsv > samples_noduplicates.tsv 
     
     # Save work dir so that it can be removed onComplete of workflow, 
