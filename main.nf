@@ -25,21 +25,21 @@ if (params.header) {
 log.info """\
                 nf iRods to Lustre - HGI
          ======================================="
-		run mode                           : ${params.run_mode}
-		input_study_lanes                  : ${params.input_study_lanes}
-		input_studies       				: ${params.input_studies}
-		input_samples_csv                  : ${params.input_samples_csv}
+		run mode						: ${params.run_mode}
+		input_study_lanes				: ${params.input_study_lanes}
+		input_studies					: ${params.input_studies}
+		input_samples_csv				: ${params.input_samples_csv}
 	 
-		input_gsheet_name					: ${params.input_gsheet_name}
-		input_google_creds					: ${params.input_google_creds}
-		output_csv_name						: ${params.output_csv_name}
-		input_sheet_name					: ${params.input_sheet_name}
+		input_gsheet_name				: ${params.input_gsheet_name}
+		input_google_creds				: ${params.input_google_creds}
+		output_csv_name					: ${params.output_csv_name}
+		input_sheet_name				: ${params.input_sheet_name}
 		
-		samples_to_process					: ${params.samples_to_process}
+		samples_to_process				: ${params.samples_to_process}
 	 
-        Name of outdir dir (DIRECTORY)      : ${params.outdir}
-		output CRAMS dir (DIRECTORY)        : ${params.cram_output_dir}
-		output reports dir (DIRECTORY)      : ${params.reportdir}
+		Name of outdir dir (DIRECTORY)	: ${params.outdir}
+		output CRAMS dir (DIRECTORY)	: ${params.cram_output_dir}
+		output reports dir (DIRECTORY)	: ${params.reportdir}
          """
          .stripIndent()
  }
