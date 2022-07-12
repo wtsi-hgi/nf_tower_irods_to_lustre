@@ -36,11 +36,11 @@ process imeta_study_lane {
             --zone seq --obj --avu |\
     jq '.[] as \$a | 
         "(\$a.avus | .[] | select(.attribute == "sample") | \
-        .value)____\($a.collection)/\($a.data_object)____\($a.avus | \
-        .[] | select(.attribute == "sample_supplier_name") | .value)____\($a.avus | \
-        .[] | select(.attribute == "id_run") | .value)____\($a.avus | .[] | \
-        select(.attribute == "is_paired_read") | .value)____\($a.avus | .[] | \
-        select(.attribute == "study_id") | .value)____\($a.avus | .[] | \
+        .value)____($a.collection)/\($a.data_object)____\($a.avus | \
+        .[] | select(.attribute == "sample_supplier_name") | .value)____($a.avus | \
+        .[] | select(.attribute == "id_run") | .value)____($a.avus | .[] | \
+        select(.attribute == "is_paired_read") | .value)____($a.avus | .[] | \
+        select(.attribute == "study_id") | .value)____($a.avus | .[] | \
         select(.attribute == "study") | .value)"' | \
     sed s"/$(printf '\t')//"g |\
     sed s"/\"//"g |\
