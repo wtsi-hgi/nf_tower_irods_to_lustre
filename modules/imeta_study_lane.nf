@@ -34,8 +34,8 @@ process imeta_study_lane {
           {attribute: \"study_id\", value: \"\$study_id\", o: \"=\"}]}" |\
     /software/sciops/pkgg/baton/2.0.1+1da6bc5bd75b49a2f27d449afeb659cf6ec1b513/bin/baton-metaquery \
             --zone seq --obj --avu |\
-    jq '.[] as $a | 
-        "\($a.avus | .[] | select(.attribute == "sample") | \
+    jq '.[] as \$a | 
+        "\(\$a.avus | .[] | select(.attribute == "sample") | \
         .value)____\($a.collection)/\($a.data_object)____\($a.avus | \
         .[] | select(.attribute == "sample_supplier_name") | .value)____\($a.avus | \
         .[] | select(.attribute == "id_run") | .value)____\($a.avus | .[] | \
