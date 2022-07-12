@@ -36,11 +36,19 @@ log.info """\
 		input_sheet_name				: ${params.input_sheet_name}
 		
 		samples_to_process				: ${params.samples_to_process}
-	 
+
+		run_imeta_study					: ${params.run_imeta_study} 
+    	run_imeta_samples				: ${params.run_imeta_samples}
+    	run_imeta_study_cellranger		: ${params.run_imeta_study_cellranger}
+    	run_iget_study_cellranger		: ${params.run_iget_study_cellranger}
+    	run_iget_study_cram				: ${params.run_iget_study_cram}
+    	run_crams_to_fastq				: ${params.run_crams_to_fastq}		
+    	run_metadata_visualisation		: ${params.run_metadata_visualisation}
+
 		Name of outdir dir (DIRECTORY)	: ${params.outdir}
 		output CRAMS dir (DIRECTORY)	: ${params.cram_output_dir}
 		output reports dir (DIRECTORY)	: ${params.reportdir}
-         """
+        """
          .stripIndent()
  }
  
