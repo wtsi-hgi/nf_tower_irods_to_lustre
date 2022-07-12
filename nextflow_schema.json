@@ -34,6 +34,42 @@
                     "default": "false",
                     "fa_icon": "fas fa-angle-double-right"
                 },
+                "run_imeta_samples": {
+                    "type": "boolean",                    
+                    "description": "",
+                    "default": "true",
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "run_imeta_study_cellranger": {
+                    "type": "boolean",                    
+                    "description": "Set to true if run_mode is study_id otherwise set to false",
+                    "default": "false",
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "run_iget_study_cram": {
+                    "type": "boolean",                    
+                    "description": "",
+                    "default": "true",
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "run_iget_study_cellranger": {
+                    "type": "boolean",                    
+                    "description": "",
+                    "default": "false",
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "run_crams_to_fastq": {
+                    "type": "boolean",                    
+                    "description": "",
+                    "default": "false",
+                    "fa_icon": "fas fa-angle-double-right"
+                },   
+                "crams_to_fastq_min_reads": {
+                    "type": "integer",                    
+                    "description": "",
+                    "default": "1000",
+                    "fa_icon": "fas fa-angle-double-right"
+                },
                 "input_studies": {
                     "type": "integer",
                     "description": "one or more study_ids to get CRAM files, will fail if multiple CRAMS per sample",
