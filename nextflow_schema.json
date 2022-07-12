@@ -42,7 +42,7 @@
                 },
                 "run_imeta_study_cellranger": {
                     "type": "boolean",                    
-                    "description": "Set to true if run_mode is study_id otherwise set to false",
+                    "description": "",
                     "default": "false",
                     "fa_icon": "fas fa-angle-double-right"
                 },
