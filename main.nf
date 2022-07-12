@@ -17,6 +17,33 @@ include { iget_study_cram } from './modules/iget_study_cram.nf'
 // include workflow common to all input modes:
 include { run_from_irods_tsv } from './modules/run_from_irods_tsv.nf'
 
+// params default
+params.header = true
+
+// print variables
+if (params.header) {
+log.info """\
+                nf iRods to Lustre - HGI
+         ======================================="
+         run mode                                       : ${params.run_mode}
+         input_study_lanes                              : ${params.input_study_lanes}
+         input_studies       				: ${params.input_studies}
+         input_samples_csv                              : ${params.input_samples_csv}
+	 
+	 input_gsheet_name				: ${params.input_gsheet_name}
+	 input_google_creds				: ${params.input_google_creds}
+	 output_csv_name				: ${params.output_csv_name}
+	 input_sheet_name				: ${params.input_sheet_name}
+	 
+	 samples_to_process				: ${params.samples_to_process}
+	 
+         Name of outdir dir (DIRECTORY)                 : ${params.outdir}
+	 output CRAMS dir (DIRECTORY)                 	: ${params.cram_output_dir}
+	 output reports dir (DIRECTORY)                 : ${params.reportdir}
+         """
+         .stripIndent()
+ }
+ 
 workflow {
 
     if (params.run_mode == "study_id") {
