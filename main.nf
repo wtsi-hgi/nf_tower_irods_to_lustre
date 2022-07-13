@@ -60,8 +60,11 @@ workflow {
 			log.info "if -> params.input_study_lanes : ${params.input_study_lanes}"
 			log.info "imeta_study_lane : ${params.input_studies} - ${params.input_study_lanes}"
 	    	imeta_study_lane( [params.input_studies, params.input_study_lanes] )
+			log.info "imeta_study_lane : end"
             samples_irods_tsv = imeta_study_lane.out.irods_samples_tsv
+			log.info "imeta_study_lane : samples_irods_tsv - ${samples_irods_tsv}"
             work_dir_to_remove = imeta_study_lane.out.work_dir_to_remove
+			log.info "imeta_study_lane : work_dir_to_remove - ${work_dir_to_remove}"
         }
         else{
 			log.info "else -> params.input_study_lanes : ${params.input_study_lanes}"  

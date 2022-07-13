@@ -14,6 +14,7 @@ workflow run_from_irods_tsv {
     take: channel_samples_tsv
     main:
 
+    log.info "run_from_irods_tsv -> params.run_mode : ${params.run_mode}"
     // task to iget all Irods cram files of all samples
     if (params.run_mode == "study_id") {
         iget_study_cram(
@@ -53,25 +54,26 @@ workflow run_from_irods_tsv {
     
         // task to search Irods cellranger location for each sample:
         imeta_study_cellranger(
-	    channel_samples_tsv
-	        .map{study_id, samples_tsv -> samples_tsv}
-	        .splitCsv(header: true, sep: '\t')
-	        .map{row->tuple(row.study_id, row.sample, row.id_run)}
-	        .unique())
+            channel_samples_tsv
+                .map{study_id, samples_tsv -> samples_tsv}
+                .splitCsv(header: true, sep: '\t')
+                .map{row->tuple(row.study_id, row.sample, row.id_run)}
+                .unique()
+        )
 
         // store the list cellranger locations found into a single tsv table called "cellranger_irods_objects.csv"
         imeta_study_cellranger.out.study_id_sample_cellranger_object
-	    .map{study_id, sample, run_id, cellranger_irods_object, workdir ->
-	    "${study_id},${sample},${run_id},${cellranger_irods_object},${workdir}"}
-	    .collectFile(name: 'cellranger_irods_objects.csv', newLine: true, sort: true,
-	  	         seed: "study_id,sanger_sample_id,run_id,cellranger_irods_object,workdir",
-		         storeDir:params.outdir)
+            .map{study_id, sample, run_id, cellranger_irods_object, workdir ->
+            "${study_id},${sample},${run_id},${cellranger_irods_object},${workdir}"}
+            .collectFile(name: 'cellranger_irods_objects.csv', newLine: true, sort: true,
+                    seed: "study_id,sanger_sample_id,run_id,cellranger_irods_object,workdir",
+                    storeDir:params.outdir)
 
         // task to iget the cellranger outputs from Irods:
         iget_study_cellranger(imeta_study_cellranger.out.study_id_sample_cellranger_object
-	 		      .map{study_id, sample, run_id, cellranger_irods_object, workdir ->
-	        tuple(study_id, sample, cellranger_irods_object)}
-			      .filter { it[2] != "cellranger_irods_not_found" })
+	 		    .map{study_id, sample, run_id, cellranger_irods_object, workdir ->
+	            tuple(study_id, sample, cellranger_irods_object)}
+			    .filter { it[2] != "cellranger_irods_not_found" })
 
         // prepare Lelands' pipeline inputs
         // --file_paths_10x    Tab-delimited file containing experiment_id and
@@ -79,26 +81,27 @@ workflow run_from_irods_tsv {
         // prepare Lelands' pipeline input
         // --file_metadata     Tab-delimited file containing sample metadata.
         if (params.run_mode == "google_spreadsheet") {
-	    file_paths_10x_name = params.google_spreadsheet_mode.
-	    input_gsheet_name.replaceAll(/ /, "_") + ".file_paths_10x.tsv"
-	    file_metadata_name = params.google_spreadsheet_mode.
-	    input_gsheet_name.replaceAll(/ /, "_") + ".file_metadata.tsv" }
+            file_paths_10x_name = params.google_spreadsheet_mode.
+            input_gsheet_name.replaceAll(/ /, "_") + ".file_paths_10x.tsv"
+            file_metadata_name = params.google_spreadsheet_mode.
+            input_gsheet_name.replaceAll(/ /, "_") + ".file_metadata.tsv" }
         else {
-	    file_paths_10x_name = "file_paths_10x.tsv"
-	    file_metadata_name = "file_metadata.tsv" }
+            file_paths_10x_name = "file_paths_10x.tsv"
+            file_metadata_name = "file_metadata.tsv"
+        }
 
         iget_study_cellranger.out.cellranger_filtered_outputs
-	    .map{sample, filt10x_dir, filt_barcodes, filt_h5, bam ->
-	    "${sample}\t${filt10x_dir}\t${sample}\tNA\tNA\t${filt_barcodes}\t${filt_h5}\t${bam}"}
-	    .collectFile(name: file_paths_10x_name, 
-		         newLine: true, sort: true,
-		         seed: "experiment_id\tdata_path_10x_format\tshort_experiment_id\tncells_expected\tndroplets_include_cellbender\tdata_path_barcodes\tdata_path_filt_h5\tdata_path_bam_file",
-		         storeDir:params.outdir)
+            .map{sample, filt10x_dir, filt_barcodes, filt_h5, bam ->
+            "${sample}\t${filt10x_dir}\t${sample}\tNA\tNA\t${filt_barcodes}\t${filt_h5}\t${bam}"}
+            .collectFile(name: file_paths_10x_name, 
+                    newLine: true, sort: true,
+                    seed: "experiment_id\tdata_path_10x_format\tshort_experiment_id\tncells_expected\tndroplets_include_cellbender\tdata_path_barcodes\tdata_path_filt_h5\tdata_path_bam_file",
+                    storeDir:params.outdir)
 
         iget_study_cellranger.out.cellranger_metadata_tsv
-	    .collectFile(name: file_metadata_name, 
-		         newLine: false, sort: true, keepHeader: true,
-		         storeDir:params.outdir)
+            .collectFile(name: file_metadata_name, 
+                    newLine: false, sort: true, keepHeader: true,
+                    storeDir:params.outdir)
 
         emit:
         imeta_study_cellranger.out.work_dir_to_remove
