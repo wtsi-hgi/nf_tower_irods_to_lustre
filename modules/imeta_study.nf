@@ -15,6 +15,7 @@ process imeta_study {
 
     script:
     """
+    echo inside imeta_study.sh - ${study_id}
     bash $workflow.projectDir/bin/imeta_study.sh ${study_id}
     awk '!a[\$1]++' samples.tsv > samples_noduplicates.tsv 
 
