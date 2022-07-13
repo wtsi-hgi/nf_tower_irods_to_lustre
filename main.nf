@@ -66,7 +66,8 @@ workflow {
         else{
 			log.info "else -> params.input_study_lanes : ${params.input_study_lanes}"  
 			log.info "imeta_study : ${params.input_studies}"   
-			ch_inputStudies = Channel.from(params.input_studies).view()
+			ch_inputStudies = Channel.from(params.input_studies)
+			ch_inputStudies.view()
 			imeta_study(ch_inputStudies)
 			samples_irods_tsv = imeta_study.out.irods_samples_tsv
 			work_dir_to_remove = imeta_study.out.work_dir_to_remove 
