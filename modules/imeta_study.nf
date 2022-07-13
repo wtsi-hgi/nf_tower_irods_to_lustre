@@ -5,9 +5,6 @@ process imeta_study {
     publishDir "${params.outdir}/", mode: 'copy', pattern: "samples.tsv", saveAs: { filename -> "${study_id}.$filename" }, overwrite: true
     publishDir "${params.outdir}/", mode: 'copy', pattern: "samples_noduplicates.tsv", saveAs: { filename -> "${study_id}.$filename" }, overwrite: true
 
-    when: 
-    params.run_imeta_study
-
     input: 
     val(study_id)
 
