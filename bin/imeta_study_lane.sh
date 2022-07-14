@@ -32,4 +32,11 @@ jq '.[] as $a|
     sed s"/____/$(printf '\t')/"g |\
 sort | uniq >> samples.tsv
 
+# block to check if the file has data
+if [ $(wc -l < samples.tsv ) -le 1 ]
+then
+		echo "samples.tsv only contains the header\n"
+		exit 1
+fi
+
 echo jq search study_id + id_run done
