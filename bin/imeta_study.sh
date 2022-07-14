@@ -26,6 +26,13 @@ sort | uniq >> samples.tsv
 sample_num=$(awk '{if ($1 != "sample")print$1}' samples.tsv | uniq | wc -l)
 let file_num=$(awk '{if ($2 != "object")print$2}' samples.tsv | sed 's/\.[crb]\+am//' | uniq | wc -l) 
 
+# block to check if the file has data
+if [ $(wc -l < samples.tsv ) -le 1 ]
+then
+		echo "samples.tsv only contains the header"
+		exit 1
+fi
+
 if [[ $file_num != $sample_num ]] 
    then
       echo There are more files than samples, best not to use run_study_id to download

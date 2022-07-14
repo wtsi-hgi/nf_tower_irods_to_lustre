@@ -30,5 +30,12 @@ sort | uniq | grep -P "^1\t1" >> samples.tmp.tsv
 cat samples.tmp.tsv | awk '{print substr($0, index($0, $3))}' > samples.tsv 
 rm samples.tmp.tsv
 
+# block to check if the file has data
+if [ $(wc -l < samples.tsv ) -le 1 ]
+then
+		echo "samples.tsv only contains the header"
+		exit 1
+fi
+
 echo jq search study id done
 echo see samples.tsv

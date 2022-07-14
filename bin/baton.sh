@@ -27,6 +27,13 @@ jq '.[] as $a|
     sed s"/____/$(printf '\t')/"g |\
 sort | uniq >> samples.tsv
 
+# block to check if the file has data
+if [ $(wc -l < samples.tsv ) -le 1 ]
+then
+		echo "samples.tsv only contains the header"
+		exit 1
+fi
+
 #singularity exec /software/hgi/containers/singularity-baton/baton.simg baton-metaquery \
 
 
