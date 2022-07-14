@@ -28,6 +28,18 @@
                     "default": "1",
                     "fa_icon": "fas fa-angle-double-right"
                 },
+                "input_studies": {
+                    "type": "integer",
+                    "description": "one or more study_ids to get CRAM files, will fail if multiple CRAMS per sample",
+                    "default": ["6407"],
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "input_study_lanes": {
+                    "type": "integer",
+                    "description": "",
+                    "default": ["44807"],
+                    "fa_icon": "fas fa-angle-double-right"
+                },
                 "run_imeta_study": {
                     "type": "boolean",                    
                     "description": "Set to true if run_mode is study_id otherwise set to false",
@@ -40,12 +52,6 @@
                     "default": "true",
                     "fa_icon": "fas fa-angle-double-right"
                 },
-                "run_imeta_study_cellranger": {
-                    "type": "boolean",                    
-                    "description": "",
-                    "default": "false",
-                    "fa_icon": "fas fa-angle-double-right"
-                },
                 "run_iget_study_cram": {
                     "type": "boolean",                    
                     "description": "",
@@ -53,6 +59,12 @@
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "run_iget_study_cellranger": {
+                    "type": "boolean",                    
+                    "description": "",
+                    "default": "false",
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "run_imeta_study_cellranger": {
                     "type": "boolean",                    
                     "description": "",
                     "default": "false",
@@ -70,12 +82,6 @@
                     "default": "1000",
                     "fa_icon": "fas fa-angle-double-right"
                 },
-                "input_studies": {
-                    "type": "integer",
-                    "description": "one or more study_ids to get CRAM files, will fail if multiple CRAMS per sample",
-                    "default": ["3342"],
-                    "fa_icon": "fas fa-angle-double-right"
-                },
                 "input_samples_csv": {
                     "type": "string",
                     "description": "TSV with samples and iRODS path, required for csv_samples_id mode, otherwise leave as default, which shows format",
@@ -88,7 +94,6 @@
                     "default": "sample",
                     "fa_icon": "fas fa-code"
                 },
-
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
@@ -110,7 +115,6 @@
                     "default": "${projectDir}/outdir/reports",
                     "fa_icon": "fas fa-folder-open"
                 },
-
                 "singularity_use_pre_cached_images": {
                     "type": "boolean",
                     "description": "Decide to use or not cached images",
