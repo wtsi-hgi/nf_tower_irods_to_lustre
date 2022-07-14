@@ -55,27 +55,46 @@ log.info """\
 workflow {
 
     if (params.run_mode == "study_id") {
-		log.info "if -> params.run_mode : ${params.run_mode}"
+
+        log.info " -- PARAMS_.input_study_lane -- : ${params.input_study_lanes}"
         if (params.input_study_lanes) {
-			log.info "if -> params.input_study_lanes : ${params.input_study_lanes}"
-			log.info "imeta_study_lane : ${params.input_studies} - ${params.input_study_lanes}"
-	    	imeta_study_lane( [params.input_studies, params.input_study_lanes] )
-			log.info "imeta_study_lane : end"
+            log.info " -- PARAMS_params.input_studies -- : ${params.input_studies}"
+            log.info " -- PARAMS_params.input_study_lanes -- : ${params.input_study_lanes}"
+            imeta_study_lane( [params.input_studies, params.input_study_lanes] )
+
+            log.info " -- PARAMS_samples_irods_tsv -- : ${imeta_study_lane.out.irods_samples_tsv}"
             samples_irods_tsv = imeta_study_lane.out.irods_samples_tsv
-			log.info "imeta_study_lane : samples_irods_tsv - ${samples_irods_tsv}"
+            samples_irods_tsv.view()
+            
+            log.info " -- PARAMS_work_dir_to_remove -- : ${imeta_study_lane.out.work_dir_to_remove}"
             work_dir_to_remove = imeta_study_lane.out.work_dir_to_remove
-			log.info "imeta_study_lane : work_dir_to_remove - ${work_dir_to_remove}"
         }
         else{
-			log.info "else -> params.input_study_lanes : ${params.input_study_lanes}"  
-			log.info "imeta_study : ${params.input_studies}"   
-			ch_inputStudies =  Channel.from (params.input_studies)
-			ch_inputStudies.subscribe {  println "Got: $it"  }
-			imeta_study(ch_inputStudies)
-			samples_irods_tsv = imeta_study.out.irods_samples_tsv
-			work_dir_to_remove = imeta_study.out.work_dir_to_remove 
-		}
-    }
+            log.info " -- PARAMS_ELSE imeta_studys -- : Ch >> ${params.input_studies}"
+            imeta_study(Channel.from(params.input_studies))
+
+            log.info " -- PARAMS_ELSE_samples_irods_tsv -- : ${imeta_study.out.irods_samples_tsv}"
+            samples_irods_tsv = imeta_study.out.irods_samples_tsv
+            samples_irods_tsv.view()
+
+            log.info " -- PARAMS_ELSE_work_dir_to_remove -- : ${imeta_study.out.work_dir_to_remove}"
+            work_dir_to_remove = imeta_study.out.work_dir_to_remove
+            work_dir_to_remove.view()
+            log.info " -- FUNCTION_iget_study_cram -- : ${imeta_study.out.work_dir_to_remove}"
+        } 
+		iget_study_cram(
+            samples_irods_tsv
+                .map{study_id, samples_tsv -> samples_tsv}
+                .splitCsv(header: true, sep: '\t')
+                .map{row->tuple(row.study_id, row.sample, row.object)}
+                .filter { it[2] =~ /.cram$/ } // Need to check for bam too?
+                .take(params.samples_to_process)
+                .dump()
+                .unique().view())
+        log.info " --  --"
+
+	}
+
 
     else if (params.run_mode == "csv_samples_id") {
 		log.info "else -> params.run_mode : ${params.run_mode}"
