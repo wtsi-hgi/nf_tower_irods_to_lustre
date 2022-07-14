@@ -82,17 +82,6 @@ workflow {
             work_dir_to_remove.view()
             log.info " -- FUNCTION_iget_study_cram -- : ${imeta_study.out.work_dir_to_remove}"
         } 
-		iget_study_cram(
-            samples_irods_tsv
-                .map{study_id, samples_tsv -> samples_tsv}
-                .splitCsv(header: true, sep: '\t')
-                .map{row->tuple(row.study_id, row.sample, row.object)}
-                .filter { it[2] =~ /.cram$/ } // Need to check for bam too?
-                .take(params.samples_to_process)
-                .dump()
-                .unique().view())
-        log.info " --  --"
-
 	}
 
 
