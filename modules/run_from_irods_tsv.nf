@@ -26,7 +26,6 @@ workflow run_from_irods_tsv {
             .map{row->tuple(row.study_id, row.sample, row.object)}
             .filter { it[2] =~ /.cram$/ } // Need to check for bam too?
             .take(params.samples_to_process)
-            .dump()
             .unique())
     
     // task to merge cram files of each sample and convert them to fastq
@@ -79,7 +78,8 @@ workflow run_from_irods_tsv {
     }else {
     	file_paths_10x_name = "file_paths_10x.tsv"
     	raw_file_paths_10x_name = "raw.file_paths_10x.tsv"
-      	file_metadata_name = "file_metadata.tsv" }
+      	file_metadata_name = "file_metadata.tsv" 
+    }
     
     iget_study_cellranger.out.cellranger_filtered_outputs
   	    .map{sample, filt10x_dir, filt_barcodes, filt_h5, bam ->
