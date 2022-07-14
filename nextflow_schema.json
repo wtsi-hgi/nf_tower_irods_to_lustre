@@ -52,6 +52,12 @@
                     "default": "true",
                     "fa_icon": "fas fa-angle-double-right"
                 },
+                "run_imeta_study_lanes": {
+                    "type": "boolean",                    
+                    "description": "",
+                    "default": "true",
+                    "fa_icon": "fas fa-angle-double-right"
+                },
                 "run_iget_study_cram": {
                     "type": "boolean",                    
                     "description": "",
