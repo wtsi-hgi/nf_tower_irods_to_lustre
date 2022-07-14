@@ -31,13 +31,13 @@
                 "input_studies": {
                     "type": "integer",
                     "description": "one or more study_ids to get CRAM files, will fail if multiple CRAMS per sample",
-                    "default": ["6407"],
+                    "default": "6407",
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "input_study_lanes": {
                     "type": "integer",
                     "description": "",
-                    "default": ["44807"],
+                    "default": "44807",
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "run_imeta_study": {
