@@ -114,15 +114,15 @@
                     "default": "${projectDir}/outdir/crams",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "copy_mode": {
+                "reportdir": {
                     "type": "string",
                     "description": "The output directory where the results will be saved. You have to use absolute paths.",
                     "default": "${projectDir}/outdir",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "reportdir": {
+                "copy_mode": {
                     "type": "string",
-                    "description": "/ choose \"rellink\" ,\"symlink\", \"move\" or \"copy\" to stage in crams and cellranger data from work dir into results dir",
+                    "description": "choose \"rellink\" ,\"symlink\", \"move\" or \"copy\" to stage in crams and cellranger data from work dir into results dir",
                     "default": "symlink",
                     "enum": ["rellink", "symlink","move","copy"],
                     "fa_icon": ""
