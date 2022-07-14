@@ -43,43 +43,43 @@
                 "run_imeta_study": {
                     "type": "boolean",                    
                     "description": "Set to true if run_mode is study_id otherwise set to false",
-                    "default": "false",
+                    "default": false,
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "run_imeta_samples": {
                     "type": "boolean",                    
                     "description": "",
-                    "default": "true",
+                    "default": true,
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "run_imeta_study_lanes": {
                     "type": "boolean",                    
                     "description": "",
-                    "default": "true",
+                    "default": true,
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "run_iget_study_cram": {
                     "type": "boolean",                    
                     "description": "",
-                    "default": "true",
+                    "default": true,
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "run_iget_study_cellranger": {
                     "type": "boolean",                    
                     "description": "",
-                    "default": "false",
+                    "default": true,
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "run_imeta_study_cellranger": {
                     "type": "boolean",                    
                     "description": "",
-                    "default": "false",
+                    "default": true,
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "run_crams_to_fastq": {
-                    "type": "boolean",                    
+                    "type": "boolean",                     
                     "description": "",
-                    "default": "false",
+                    "default": true,
                     "fa_icon": "fas fa-angle-double-right"
                 },   
                 "crams_to_fastq_min_reads": {
