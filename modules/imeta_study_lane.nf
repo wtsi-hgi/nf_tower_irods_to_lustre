@@ -6,7 +6,7 @@ process imeta_study_lane {
     publishDir "${params.outdir}/", mode: 'copy', pattern: "samples_noduplicates.tsv", saveAs: { filename -> "${study_id}.$filename" }, overwrite: true
 
     when: 
-    params.study_id_mode.run_imeta_study_lanes
+    params.run_imeta_study_lanes
 
     input: 
     tuple val(study_id), val(lane_id)
