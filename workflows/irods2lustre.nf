@@ -87,7 +87,6 @@ workflow IRODS2LUSTRE {
         }
         else{
 			if (params.sample_name){
-				log.info("input study - ${params.input_studies} -> sampleName - ${params.sample_name}")
 				imeta_studyId_sampleName(Channel.from(params.input_studies), Channel.from(params.sample_name))
 				
 				samples_irods_tsv = imeta_studyId_sampleName.out.irods_samples_tsv
