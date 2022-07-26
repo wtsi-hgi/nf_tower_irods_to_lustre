@@ -6,7 +6,7 @@ process imeta_studyId_sampleName {
     publishDir "${params.outdir}/", mode: 'copy', pattern: "samples_noduplicates.tsv", saveAs: { filename -> "${study_id}.$filename" }, overwrite: true
 
     input: 
-    val(study_id), val(sample_name)
+    tuple val(study_id), val(sample_name)
 
     output: 
     tuple val(study_id), path('samples.tsv'), emit: irods_samples_tsv
