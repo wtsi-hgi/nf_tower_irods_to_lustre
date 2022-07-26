@@ -19,7 +19,8 @@
 */
 
 // import modules that depend on input mode:
-include { imeta_study } from "$projectDir/modules/imeta_study.nf"
+include { imeta_study } from "$projectDir/modules/imeta_study.nf" 
+include { imeta_studyId_sampleName } from "$projectDir/modules/imeta_studyId_sampleName.nf"
 include { imeta_study_lane } from "$projectDir/modules/imeta_study_lane.nf"
 include { imeta_samples_csv } from "$projectDir/modules/imeta_samples_csv.nf"
 include { gsheet_to_csv } from "$projectDir/modules/gsheet_to_csv.nf"
@@ -85,10 +86,17 @@ workflow IRODS2LUSTRE {
             work_dir_to_remove = imeta_study_lane.out.work_dir_to_remove
         }
         else{
-            imeta_study(Channel.from(params.input_studies))
+			if (params.sample_name){
+				imeta_studyId_sampleName(Channel.from(params.input_studies), Channel.from(params.sample_name))
+				
+				samples_irods_tsv = imeta_studyId_sampleName.out.irods_samples_tsv
+            	work_dir_to_remove = imeta_studyId_sampleName.out.work_dir_to_remove
+			}else{
+				imeta_study(Channel.from(params.input_studies))
 
-            samples_irods_tsv = imeta_study.out.irods_samples_tsv
-            work_dir_to_remove = imeta_study.out.work_dir_to_remove
+				samples_irods_tsv = imeta_study.out.irods_samples_tsv
+				work_dir_to_remove = imeta_study.out.work_dir_to_remove
+			}
         } 
 	}
 
