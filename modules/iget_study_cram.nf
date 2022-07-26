@@ -1,5 +1,5 @@
 process 'iget_study_cram' {
-    tag "${study_id} - ${sample}"
+    tag " - ${sample}"
     publishDir "${params.cram_output_dir}", mode: "${params.copy_mode}"
     
     when: 

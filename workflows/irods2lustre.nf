@@ -120,6 +120,7 @@ workflow IRODS2LUSTRE {
 		work_dir_to_remove = imeta_samples_csv.out.work_dir_to_remove.mix(gsheet_to_csv.out.work_dir_to_remove) 
 	}
     // common to all input modes:
+	samples_irods_tsv.view()
     run_from_irods_tsv(samples_irods_tsv)
 
     // list work dirs to remove (because they are Irods searches, so need to always rerun on each NF run):
