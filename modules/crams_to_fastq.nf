@@ -1,5 +1,5 @@
 process crams_to_fastq {
-    tag "${sample}-${study_id}"
+    tag "${study_id}-${sample}"
     publishDir "${params.outdir}/crams_to_fastq/fastq/${study_id}/${sample}/", mode: "${params.copy_mode}", overwrite: true, pattern: "*.fastq.gz"
     publishDir "${params.outdir}/crams_to_fastq/merged_crams/${study_id}/${sample}/", mode: "${params.copy_mode}", overwrite: true, pattern: "${study_id}.${sample}_merged.cram"
     
