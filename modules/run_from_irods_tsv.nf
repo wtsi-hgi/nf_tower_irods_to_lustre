@@ -27,7 +27,7 @@ workflow run_from_irods_tsv {
             .filter { it[2] =~ /.cram$/ } // Need to check for bam too?
             .take(params.samples_to_process)
             .unique())
-
+    
     // task to merge cram files of each sample and convert them to fastq
     // merge by study_id and sample (Irods sanger_sample_id)
     crams_to_fastq(iget_study_cram.out.study_sample_cram.groupTuple(by: [0,1]))

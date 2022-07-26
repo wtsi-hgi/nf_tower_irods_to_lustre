@@ -34,16 +34,10 @@
                     "default": "6407",
                     "fa_icon": "fas fa-angle-double-right"
                 },
-                "sample_name": {
-                    "type": "string",
-                    "description": "Name of the Sample to move. It should be defined with the input_studies",
-                    "default": "",
-                    "fa_icon": "fas fa-angle-double-right"
-                },
                 "input_study_lanes": {
                     "type": "integer",
                     "description": "",
-                    "default": "",
+                    "default": "44807",
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "run_imeta_study": {
