@@ -17,15 +17,6 @@ workflow run_from_irods_tsv {
 
     main:
     
-log.info("flag: ")
-            channel_samples_tsv
-            .map{study_id, samples_tsv -> samples_tsv}
-            .splitCsv(header: true, sep: '\t')
-            .map{row->tuple(row.study_id, row.sample, row.object)}
-            .filter { it[2] =~ /.cram$/ } // Need to check for bam too?
-            .take(params.samples_to_process)
-            .unique().view()
-
     // task to iget all Irods cram files of all samples
     // working going ON -> added   take(params.samples_to_process) to limit the samples
     iget_study_cram(
