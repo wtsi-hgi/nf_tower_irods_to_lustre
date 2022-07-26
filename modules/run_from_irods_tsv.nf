@@ -29,11 +29,11 @@ workflow run_from_irods_tsv {
             .unique())
     
     log.info("flag: ")
-iget_study_cram.out.study_sample_cram.groupTuple(by: [0,1]).view()
+iget_study_cram.out.study_sample_cram.groupTuple(by: [1,2]).view()
 
     // task to merge cram files of each sample and convert them to fastq
     // merge by study_id and sample (Irods sanger_sample_id)
-    crams_to_fastq(iget_study_cram.out.study_sample_cram.groupTuple(by: [0,1]))
+    crams_to_fastq(iget_study_cram.out.study_sample_cram.groupTuple(by: [1,2]))
     
     // store the number of reads in merged cram in output tables
     // lostcause has samples that did not pass the crams_to_fastq_min_reads input param, which is the minimum number of reads in merged cram file to try and convert to fastq.gz
