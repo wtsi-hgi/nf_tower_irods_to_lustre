@@ -47,6 +47,7 @@ log.info """\
 		run mode						: ${params.run_mode}
 		input_study_lanes				: ${params.input_study_lanes}
 		input_studies					: ${params.input_studies}
+		sample_name						: ${params.sample_name}
 		input_samples_csv				: ${params.input_samples_csv}
 	 
 		input_gsheet_name				: ${params.input_gsheet_name}
