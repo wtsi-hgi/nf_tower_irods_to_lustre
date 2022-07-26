@@ -90,8 +90,8 @@ workflow IRODS2LUSTRE {
 			if (params.sample_name){
 				imeta_studyId_sampleName(Channel.from(params.input_studies), Channel.from(params.sample_name))
 				log.info ("test")
-				//samples_irods_tsv = imeta_studyId_sampleName.out.irods_samples_tsv
-            	//work_dir_to_remove = imeta_studyId_sampleName.out.work_dir_to_remove
+				samples_irods_tsv = imeta_studyId_sampleName.out.irods_samples_tsv
+            	work_dir_to_remove = imeta_studyId_sampleName.out.work_dir_to_remove
 			}else{
 				imeta_study(Channel.from(params.input_studies))
 
