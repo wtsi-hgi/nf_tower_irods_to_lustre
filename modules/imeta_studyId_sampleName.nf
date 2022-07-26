@@ -10,9 +10,9 @@ process imeta_studyId_sampleName {
         val(sample_name)
 
     output: 
-    tuple val(study_id), path('samples.tsv'), emit: irods_samples_tsv
-    tuple val(study_id), path('samples_noduplicates.tsv'), emit: samples_noduplicates_tsv
-    env(WORK_DIR), emit: work_dir_to_remove
+        tuple val(study_id), path('samples.tsv'), emit: irods_samples_tsv
+        tuple val(study_id), path('samples_noduplicates.tsv'), emit: samples_noduplicates_tsv
+        env(WORK_DIR), emit: work_dir_to_remove
 
     script:
     """
