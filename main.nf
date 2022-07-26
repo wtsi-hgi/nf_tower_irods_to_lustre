@@ -27,7 +27,7 @@ include { IRODS2LUSTRE } from "$projectDir/workflows/irods2lustre"
 //
 // WORKFLOW: Run main nf-core/yascp analysis pipeline
 //
-workflow IRODS2LUSTRE_PIPELINE {
+workflow PIPELINE {
     IRODS2LUSTRE ()
 }
 
@@ -38,7 +38,7 @@ workflow IRODS2LUSTRE_PIPELINE {
 */
 
 workflow {
-    IRODS2LUSTRE_PIPELINE ()
+    PIPELINE ()
 }
 
 /*
