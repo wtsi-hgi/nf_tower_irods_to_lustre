@@ -2,6 +2,7 @@
     "_comment": "Test for study_id and sample_name",
     "run_mode":"study_id",
     "samples_to_process":1,
+    "input_sample_name":true,
     "input_studies":"5334",
     "sample_name":"DanNmice7472822",
     "run_imeta_study":true,

@@ -81,6 +81,7 @@ log.info """\
 workflow IRODS2LUSTRE {
     if (params.run_mode == "study_id") {
         if (params.input_study_lanes) {
+			log.info ("study_id + study_lane")
             imeta_study_lane( [params.input_studies, params.input_study_lanes] )
 
             samples_irods_tsv = imeta_study_lane.out.irods_samples_tsv
@@ -88,11 +89,13 @@ workflow IRODS2LUSTRE {
         }
         else{
 			if (params.input_sample_name){
+				log.info ("study_id + NO study_lane + saple_name")
 				imeta_studyId_sampleName(Channel.from(params.input_studies), Channel.from(params.sample_name))
 				
 				samples_irods_tsv = imeta_studyId_sampleName.out.irods_samples_tsv
             	work_dir_to_remove = imeta_studyId_sampleName.out.work_dir_to_remove
 			}else{
+				log.info ("study_id + NO study_lane + NO saple_name")
 				imeta_study(Channel.from(params.input_studies))
 
 				samples_irods_tsv = imeta_study.out.irods_samples_tsv
@@ -102,6 +105,7 @@ workflow IRODS2LUSTRE {
 	}
 
     else if (params.run_mode == "csv_samples_id") {
+		log.info ("csv_samples_id")
         samples_irods_tsv = Channel.fromPath(params.input_samples_csv)
     }
     
@@ -120,6 +124,7 @@ workflow IRODS2LUSTRE {
 		work_dir_to_remove = imeta_samples_csv.out.work_dir_to_remove.mix(gsheet_to_csv.out.work_dir_to_remove) 
 	}
     // common to all input modes:
+	log.info ("run_from_irods_tsv")
     run_from_irods_tsv(samples_irods_tsv)
 
     // list work dirs to remove (because they are Irods searches, so need to always rerun on each NF run):
