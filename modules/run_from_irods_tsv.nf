@@ -17,6 +17,15 @@ workflow run_from_irods_tsv {
 
     main:
     
+log.info("flag: ")
+            channel_samples_tsv
+            .map{study_id, samples_tsv -> samples_tsv}
+            .splitCsv(header: true, sep: '\t')
+            .map{row->tuple(row.study_id, row.sample, row.object)}
+            .filter { it[2] =~ /.cram$/ } // Need to check for bam too?
+            .take(params.samples_to_process)
+            .unique().view()
+
     // task to iget all Irods cram files of all samples
     // working going ON -> added   take(params.samples_to_process) to limit the samples
     iget_study_cram(
@@ -27,13 +36,10 @@ workflow run_from_irods_tsv {
             .filter { it[2] =~ /.cram$/ } // Need to check for bam too?
             .take(params.samples_to_process)
             .unique())
-    
-    log.info("flag: ")
-iget_study_cram.out.study_sample_cram.groupTuple(by: [1,2]).view()
 
     // task to merge cram files of each sample and convert them to fastq
     // merge by study_id and sample (Irods sanger_sample_id)
-    crams_to_fastq(iget_study_cram.out.study_sample_cram.groupTuple(by: [1,2]))
+    crams_to_fastq(iget_study_cram.out.study_sample_cram.groupTuple(by: [0,1]))
     
     // store the number of reads in merged cram in output tables
     // lostcause has samples that did not pass the crams_to_fastq_min_reads input param, which is the minimum number of reads in merged cram file to try and convert to fastq.gz
