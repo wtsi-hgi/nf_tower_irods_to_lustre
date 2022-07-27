@@ -90,8 +90,12 @@ workflow IRODS2LUSTRE {
 				log.info("input study - ${params.input_studies} -> sampleName - ${params.sample_name}")
 				imeta_studyId_sampleName(Channel.from(params.input_studies), Channel.from(params.sample_name))
 				
+
 				samples_irods_tsv = imeta_studyId_sampleName.out.irods_samples_tsv
             	work_dir_to_remove = imeta_studyId_sampleName.out.work_dir_to_remove
+
+				samples_irods_tsv.view()
+				log.info (" --- ")
 			}else{
 				imeta_study(Channel.from(params.input_studies))
 
