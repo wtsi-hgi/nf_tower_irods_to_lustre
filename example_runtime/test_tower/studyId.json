@@ -1,5 +1,4 @@
 {
-    "_comment":"Test for study_id",
     "run_mode":"study_id",
     "samples_to_process":1,
     "input_studies":"6407",
