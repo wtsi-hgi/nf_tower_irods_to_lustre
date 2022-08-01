@@ -21,7 +21,11 @@ jq -n  "{avus: [
       {attribute: \"sample\", value: \"$sample_name\", o: \"=\"}]}" |\
 /software/sciops/pkgg/baton/2.0.1+1da6bc5bd75b49a2f27d449afeb659cf6ec1b513/bin/baton-metaquery --zone seq --obj --avu |\
 jq '.[] as $a| 
-"\($a.avus | .[] | select(.attribute == "sample") | .value)____\($a.collection)/\($a.data_object)____\($a.avus | .[] | select(.attribute == "id_run") | .value)____\($a.avus | .[] | select(.attribute == "study_id") | .value)____\($a.avus | .[] | select(.attribute == "study") | .value)"' |\
+"\($a.avus | .[] | select(.attribute == "sample") | .value)____\($a.collection)/\($a.data_object)____\($a.avus | 
+.[] | select(.attribute == "id_run") | .value)____\($a.avus | \
+.[] | select(.attribute == "study_id") | .value)____\($a.avus | 
+.[] | select(.attribute == "sample") | .value)____\($a.avus | 
+.[] | select(.attribute == "study") | .value)"' |\
     sed s"/$(printf '\t')//"g |\
     sed s"/\"//"g |\
     sed s"/____/$(printf '\t')/"g |\
