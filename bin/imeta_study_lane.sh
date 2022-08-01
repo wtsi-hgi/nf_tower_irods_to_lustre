@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# to expand errors during the piping process 
+set -e
+set -o pipefail
+
 study_id=$1
 
 
@@ -27,5 +31,12 @@ jq '.[] as $a|
     sed s"/\"//"g |\
     sed s"/____/$(printf '\t')/"g |\
 sort | uniq >> samples.tsv
+
+# block to check if the file has data
+if [ $(wc -l < samples.tsv ) -le 1 ]
+then
+		echo "samples.tsv only contains the header\n"
+		exit 1
+fi
 
 echo jq search study_id + id_run done

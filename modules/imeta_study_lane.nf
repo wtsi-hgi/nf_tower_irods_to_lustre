@@ -1,12 +1,15 @@
-process imeta_study {
+process imeta_study_lane {
     tag "${study_id}"
-    publishDir "${params.outdir}/imeta_study/study_id_${study_id}/", mode: 'copy', pattern: "samples.tsv", overwrite: true
-    publishDir "${params.outdir}/imeta_study/study_id_${study_id}/", mode: 'copy', pattern: "samples_noduplicates.tsv", overwrite: true
+    publishDir "${params.outdir}/imeta_study_lane/study_id_${study_id}/", mode: 'copy', pattern: "samples.tsv", overwrite: true
+    publishDir "${params.outdir}/imeta_study_lane/study_id_${study_id}/", mode: 'copy', pattern: "samples_noduplicates.tsv", overwrite: true
     publishDir "${params.outdir}/", mode: 'copy', pattern: "samples.tsv", saveAs: { filename -> "${study_id}.$filename" }, overwrite: true
     publishDir "${params.outdir}/", mode: 'copy', pattern: "samples_noduplicates.tsv", saveAs: { filename -> "${study_id}.$filename" }, overwrite: true
 
+    when: 
+    params.run_imeta_study_lanes
+
     input: 
-    val(study_id)
+    tuple val(study_id), val(lane_id)
 
     output: 
     tuple val(study_id), path('samples.tsv'), emit: irods_samples_tsv
@@ -15,10 +18,9 @@ process imeta_study {
 
     script:
     """
-    echo inside imeta_study.sh - ${study_id}
-    bash $workflow.projectDir/bin/imeta_study.sh ${study_id}
+    bash $workflow.projectDir/bin/imeta_study_lane.sh ${study_id} ${lane_id}
     awk '!a[\$1]++' samples.tsv > samples_noduplicates.tsv 
-
+    
     # Save work dir so that it can be removed onComplete of workflow, 
     # to ensure that this task Irods search is re-run on each run NF run, 
     # in case new sequencing samples are ready: 

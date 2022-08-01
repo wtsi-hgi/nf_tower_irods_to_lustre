@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# to expand errors during the piping process 
+set -e
+set -o pipefail
+
 echo running del_work_dirs_failed.sh script...
 workdir=$1
 

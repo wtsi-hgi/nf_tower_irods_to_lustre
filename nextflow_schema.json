@@ -18,6 +18,7 @@
                 "run_mode": {
                     "type": "string",
                     "default": "csv_samples_id",
+                    "enum": ["csv_samples_id", "study_id"],
                     "description": "Choose between csv_samples_id(file of iRODS paths),study_id(one or more iRODS study_ids)",
                     "fa_icon": "fas fa-angle-double-right"
                 },
@@ -27,16 +28,64 @@
                     "default": "1",
                     "fa_icon": "fas fa-angle-double-right"
                 },
-                "run_imeta_study": {
-                    "type": "string",                    
-                    "description": "Set to true if run_mode is study_id otherwise set to false",
-                    "default": "false",
-                    "fa_icon": "fas fa-angle-double-right"
-                },
                 "input_studies": {
                     "type": "integer",
                     "description": "one or more study_ids to get CRAM files, will fail if multiple CRAMS per sample",
-                    "default": ["3342"],
+                    "default": "6407",
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "input_study_lanes": {
+                    "type": "integer",
+                    "description": "",
+                    "default": "44807",
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "run_imeta_study": {
+                    "type": "boolean",                    
+                    "description": "Set to true if run_mode is study_id otherwise set to false",
+                    "default": false,
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "run_imeta_samples": {
+                    "type": "boolean",                    
+                    "description": "",
+                    "default": true,
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "run_imeta_study_lanes": {
+                    "type": "boolean",                    
+                    "description": "",
+                    "default": true,
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "run_iget_study_cram": {
+                    "type": "boolean",                    
+                    "description": "",
+                    "default": true,
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "run_iget_study_cellranger": {
+                    "type": "boolean",                    
+                    "description": "",
+                    "default": true,
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "run_imeta_study_cellranger": {
+                    "type": "boolean",                    
+                    "description": "",
+                    "default": true,
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "run_crams_to_fastq": {
+                    "type": "boolean",                     
+                    "description": "",
+                    "default": true,
+                    "fa_icon": "fas fa-angle-double-right"
+                },   
+                "crams_to_fastq_min_reads": {
+                    "type": "integer",                    
+                    "description": "",
+                    "default": "1000",
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "input_samples_csv": {
@@ -51,7 +100,6 @@
                     "default": "sample",
                     "fa_icon": "fas fa-code"
                 },
-
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
@@ -68,12 +116,17 @@
                 },
                 "reportdir": {
                     "type": "string",
-                    "format": "directory-path",
-                    "description": "The directory where the pipeline reports will be saved. You have to use absolute paths",
+                    "description": "The output directory where the results will be saved. You have to use absolute paths.",
                     "default": "${projectDir}/outdir",
                     "fa_icon": "fas fa-folder-open"
                 },
-
+                "copy_mode": {
+                    "type": "string",
+                    "description": "choose \"rellink\" ,\"symlink\", \"move\" or \"copy\" to stage in crams and cellranger data from work dir into results dir",
+                    "default": "symlink",
+                    "enum": ["rellink", "symlink","move","copy"],
+                    "fa_icon": ""
+                },
                 "singularity_use_pre_cached_images": {
                     "type": "boolean",
                     "description": "Decide to use or not cached images",

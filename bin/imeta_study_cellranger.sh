@@ -1,4 +1,8 @@
 #!/bin/bash -euo pipefail
+# to expand errors during the piping process 
+set -e
+set -o pipefail
+
 export sample=$1
 export run_id=$2
 

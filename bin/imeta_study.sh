@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# to expand errors during the piping process 
+set -e
+set -o pipefail
+
 study_id=$1
 
 rm -f samples.tsv
@@ -21,6 +25,13 @@ sort | uniq >> samples.tsv
 
 sample_num=$(awk '{if ($1 != "sample")print$1}' samples.tsv | uniq | wc -l)
 let file_num=$(awk '{if ($2 != "object")print$2}' samples.tsv | sed 's/\.[crb]\+am//' | uniq | wc -l) 
+
+# block to check if the file has data
+if [ $(wc -l < samples.tsv ) -le 1 ]
+then
+		echo "samples.tsv only contains the header"
+		exit 1
+fi
 
 if [[ $file_num != $sample_num ]] 
    then
