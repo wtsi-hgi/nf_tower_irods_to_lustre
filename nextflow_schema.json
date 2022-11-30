@@ -17,6 +17,7 @@
             "properties": {
                 "run_mode": {
                     "type": "string",
+                    "enum": ["csv_samples_id", "study_id"],
                     "default": "csv_samples_id",
                     "description": "Choose between csv_samples_id(file of iRODS paths),study_id(one or more iRODS study_ids)",
                     "fa_icon": "fas fa-angle-double-right"
@@ -28,9 +29,9 @@
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "run_imeta_study": {
-                    "type": "string",                    
+                    "type": "boolean",
                     "description": "Set to true if run_mode is study_id otherwise set to false",
-                    "default": "false",
+                    "default": false,
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "input_studies": {
