@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eo pipefail
 
 if [ $# -ne 1 ]; then
     echo $0: usage: bash baton.sh study_id
