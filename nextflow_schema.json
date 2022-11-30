@@ -28,31 +28,12 @@
                     "default": "1",
                     "fa_icon": "fas fa-angle-double-right"
                 },
-                "run_imeta_study": {
+                "run_crams_to_fastq": {
                     "type": "boolean",
-                    "description": "Set to true if run_mode is study_id otherwise set to false",
-                    "default": false,
+                    "description": "Run task to merge and convert crams of each sample to fastq",
+                    "default": true,
                     "fa_icon": "fas fa-angle-double-right"
                 },
-                "input_studies": {
-                    "type": "integer",
-                    "description": "one or more study_ids to get CRAM files, will fail if multiple CRAMS per sample",
-                    "default": ["3342"],
-                    "fa_icon": "fas fa-angle-double-right"
-                },
-                "input_samples_csv": {
-                    "type": "string",
-                    "description": "TSV with samples and iRODS path, required for csv_samples_id mode, otherwise leave as default, which shows format",
-                    "default": "${projectDir}/example_runtime/sample.tsv",
-                    "fa_icon": "fas fa-code"
-                },
-                "input_samples_csv_column": {
-                    "type": "string",
-                    "description": "column header label with sample name",
-                    "default": "sample",
-                    "fa_icon": "fas fa-code"
-                },
-
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
@@ -73,12 +54,46 @@
                     "description": "The directory where the pipeline reports will be saved. You have to use absolute paths",
                     "default": "${projectDir}/outdir",
                     "fa_icon": "fas fa-folder-open"
-                },
-
-                "singularity_use_pre_cached_images": {
+                }
+            }
+        },
+        "study_options": {
+            "title": "Study options",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Define this options if you selected study_id mode",
+            "properties": {
+                "run_imeta_study": {
                     "type": "boolean",
-                    "description": "Decide to use or not cached images",
-                    "default": false
+                    "description": "Set to true if run_mode is study_id otherwise set to false",
+                    "default": false,
+                    "fa_icon": "fas fa-angle-double-right"
+                },
+                "input_studies": {
+                    "type": "string",
+                    "description": "study_id to get CRAM files, will fail if multiple CRAMS per sample",
+                    "default": "3342",
+                    "fa_icon": "fas fa-angle-double-right"
+                }
+            }
+        },
+        "csv_options": {
+            "title": "CSV options",
+            "type": "object",
+            "fa_icon": "far fa-file",
+            "description": "Define this options if you selected csv_samples_id mode",
+            "properties": {
+                "input_samples_csv": {
+                    "type": "string",
+                    "description": "TSV with samples and iRODS path, required for csv_samples_id mode, otherwise leave as default, which shows format",
+                    "default": "${projectDir}/example_runtime/sample.tsv",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "input_samples_csv_column": {
+                    "type": "string",
+                    "description": "column header label with sample name",
+                    "default": "sample",
+                    "fa_icon": "fas fa-columns"
                 }
             }
         }
