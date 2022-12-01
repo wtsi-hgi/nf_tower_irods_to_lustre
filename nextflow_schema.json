@@ -18,7 +18,6 @@
                 "run_mode": {
                     "type": "string",
                     "enum": ["csv_samples_id", "study_id"],
-                    "default": "csv_samples_id",
                     "description": "Choose between csv_samples_id(file of iRODS paths),study_id(one or more iRODS study_ids)",
                     "fa_icon": "fas fa-angle-double-right"
                 },
@@ -52,7 +51,7 @@
                     "type": "string",
                     "format": "directory-path",
                     "description": "The directory where the pipeline reports will be saved. You have to use absolute paths",
-                    "default": "${projectDir}/outdir",
+                    "default": "${projectDir}/reportdir",
                     "fa_icon": "fas fa-folder-open"
                 }
             }
@@ -60,7 +59,7 @@
         "study_options": {
             "title": "Study options",
             "type": "object",
-            "fa_icon": "fas fa-terminal",
+            "fa_icon": "fas fa-id-card",
             "description": "Define this options if you selected study_id mode",
             "properties": {
                 "run_imeta_study": {
