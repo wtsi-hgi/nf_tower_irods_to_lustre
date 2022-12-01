@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/./master/nextflow_schema.json",
     "title": "Download CRAMs from iRODS to lustre",
-    "description": "",
+    "description": "Please execute `iinit` on farm before running this pipeline",
     "type": "object",
     "definitions": {
         "input_output_options": {
@@ -22,9 +22,9 @@
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "samples_to_process": {
-                    "description": "Number of files to process (-1 means, all of them)",
+                    "description": "Number of files to process (-1 means all of them)",
                     "type": "integer",
-                    "default": "1",
+                    "default": 1,
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "run_crams_to_fastq": {
