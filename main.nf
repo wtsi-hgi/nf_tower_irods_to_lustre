@@ -22,8 +22,8 @@ workflow {
     if (params.run_mode == "study_id") {
         if (params.input_study_runs) {
             imeta_study_runs(params.input_studies, params.input_study_runs)
-            samples_irods_tsv = imeta_study_lane.out.irods_samples_tsv
-            work_dir_to_remove = imeta_study_lane.out.work_dir_to_remove
+            samples_irods_tsv = imeta_study_runs.out.irods_samples_tsv
+            work_dir_to_remove = imeta_study_runs.out.work_dir_to_remove
         }
         else {
             imeta_study(Channel.from(params.input_studies))

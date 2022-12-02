@@ -17,7 +17,7 @@ process imeta_study_runs {
     script:
     """
     bash $workflow.projectDir/bin/imeta_study_runs.sh ${study_id} ${run_id}
-    // awk removes duplicates as one sanger sample can have several run_id
+    # awk removes duplicates as one sanger sample can have several run_id
     awk '!a[\$1]++' samples.tsv > samples_noduplicates.tsv
 
     # Save work dir so that it can be removed onComplete of workflow,

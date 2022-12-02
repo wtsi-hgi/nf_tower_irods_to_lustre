@@ -75,7 +75,7 @@
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "input_study_runs": {
-                    "type": "integer",
+                    "type": "string",
                     "description": "Comma-separated list of run ids. Leave blank if you want to extract all samples",
                     "default": null,
                     "fa_icon": "fas fa-angle-double-right"
