@@ -1,4 +1,5 @@
 #!/bin/bash -euo pipefail
+set -eo pipefail
 export sample=$1
 export run_id=$2
 

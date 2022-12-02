@@ -35,29 +35,14 @@ workflow run_from_irods_tsv {
                 .unique())
     }
     else {
-        // task to merge cram files of each sample and convert them to fastq
-        // merge by study_id and sample (Irods sanger_sample_id)
-        //crams_to_fastq(iget_study_cram.out.study_sample_cram.groupTuple(by: [0,1]))
-
-        // store the number of reads in merged cram in output tables
-        // lostcause has samples that did not pass the crams_to_fastq_min_reads input param, which is the minimum number of reads in merged cram file to try and convert to fastq.gz 
-        //crams_to_fastq.out.lostcause
-        //	.collectFile(name: "crams_to_fastq_lowreads.tsv", 
-        //		     newLine: false, sort: true, keepHeader: true,
-        //		     storeDir:params.outdir)
-        // numreads has all samples that pass min number of reads number of reads in merged cram file
-        //crams_to_fastq.out.numreads
-        //	.collectFile(name: "crams_to_fastq_numreads.tsv", 
-        //		     newLine: false, sort: true, keepHeader: true,
-        //		     storeDir:params.outdir)
-    
         // task to search Irods cellranger location for each sample:
         imeta_study_cellranger(
-	    channel_samples_tsv
-	        .map{study_id, samples_tsv -> samples_tsv}
-	        .splitCsv(header: true, sep: '\t')
-	        .map{row->tuple(row.study_id, row.sample, row.id_run)}
-	        .unique())
+            channel_samples_tsv
+                .map{study_id, samples_tsv -> samples_tsv}
+                .splitCsv(header: true, sep: '\t')
+                .map{row->tuple(row.study_id, row.sample, row.id_run)}
+                .unique()
+        )
 
         // store the list cellranger locations found into a single tsv table called "cellranger_irods_objects.csv"
         imeta_study_cellranger.out.study_id_sample_cellranger_object
@@ -103,6 +88,22 @@ workflow run_from_irods_tsv {
         emit:
         imeta_study_cellranger.out.work_dir_to_remove
     }
+
+    // task to merge cram files of each sample and convert them to fastq
+    // merge by study_id and sample (Irods sanger_sample_id)
+    crams_to_fastq(iget_study_cram.out.study_sample_cram.groupTuple(by: [0,1]))
+
+    // store the number of reads in merged cram in output tables
+    // lostcause has samples that did not pass the crams_to_fastq_min_reads input param, which is the minimum number of reads in merged cram file to try and convert to fastq.gz
+    crams_to_fastq.out.lostcause
+        .collectFile(name: "crams_to_fastq_lowreads.tsv",
+                 newLine: false, sort: true, keepHeader: true,
+                 storeDir:params.outdir)
+    // numreads has all samples that pass min number of reads number of reads in merged cram file
+    crams_to_fastq.out.numreads
+        .collectFile(name: "crams_to_fastq_numreads.tsv",
+                 newLine: false, sort: true, keepHeader: true,
+                 storeDir:params.outdir)
 }
 
 // TODO:  here or main.nf:   // store work dirs to remove into tsv file for onComplete removal.

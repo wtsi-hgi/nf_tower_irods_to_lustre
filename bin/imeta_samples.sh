@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eo pipefail
 
 export input_csv=$1
 export column_samples=$2

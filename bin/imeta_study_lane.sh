@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eo pipefail
 study_id=$1
 
 
