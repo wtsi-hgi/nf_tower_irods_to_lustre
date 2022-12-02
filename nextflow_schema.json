@@ -60,7 +60,7 @@
             "title": "Study options",
             "type": "object",
             "fa_icon": "fas fa-id-card",
-            "description": "Define this options if you selected study_id mode",
+            "description": "Define these options if you selected study_id mode",
             "properties": {
                 "run_imeta_study": {
                     "type": "boolean",
@@ -80,7 +80,7 @@
             "title": "CSV options",
             "type": "object",
             "fa_icon": "far fa-file",
-            "description": "Define this options if you selected csv_samples_id mode",
+            "description": "Define these options if you selected csv_samples_id mode",
             "properties": {
                 "input_samples_csv": {
                     "type": "string",
