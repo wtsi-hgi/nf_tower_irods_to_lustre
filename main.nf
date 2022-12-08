@@ -7,6 +7,7 @@ nextflow.enable.dsl=2
 
 // import modules that depend on input mode:
 include { imeta_study } from './modules/imeta_study.nf'
+include { imeta_study_runs } from "$projectDir/modules/imeta_study_runs.nf"
 include { imeta_samples_csv } from './modules/imeta_samples_csv.nf'
 include { gsheet_to_csv } from './modules/gsheet_to_csv.nf'
 // module specific to google_spreadsheet input mode:
@@ -19,25 +20,34 @@ include { run_from_irods_tsv } from './modules/run_from_irods_tsv.nf'
 workflow {
 
     if (params.run_mode == "study_id") {
-	imeta_study(Channel.from(params.input_studies))
-	samples_irods_tsv = imeta_study.out.irods_samples_tsv
-	work_dir_to_remove = imeta_study.out.work_dir_to_remove }
+        if (params.input_study_runs) {
+            imeta_study_runs(params.input_studies, params.input_study_runs)
+            samples_irods_tsv = imeta_study_runs.out.irods_samples_tsv
+            work_dir_to_remove = imeta_study_runs.out.work_dir_to_remove
+        }
+        else {
+            imeta_study(Channel.from(params.input_studies))
+            samples_irods_tsv = imeta_study.out.irods_samples_tsv
+            work_dir_to_remove = imeta_study.out.work_dir_to_remove
+        }
+    }
     
     else if (params.run_mode == "csv_samples_id") {
         samples_irods_tsv = Channel.fromPath(params.input_samples_csv)
-         }
+    }
     
     else if (params.run_mode == "google_spreadsheet") {
-	i1 = Channel.from(params.input_gsheet_name)
-	i2 = Channel.fromPath(params.input_google_creds)
-	i3 = Channel.from(params.output_csv_name)
-	i31 = Channel.from(params.input_sheet_name)
+        i1 = Channel.from(params.input_gsheet_name)
+        i2 = Channel.fromPath(params.input_google_creds)
+        i3 = Channel.from(params.output_csv_name)
+        i31 = Channel.from(params.input_sheet_name)
 	
-	gsheet_to_csv(i1,i2,i3,i31)
-	i4 = Channel.from(params.google_spreadsheet_mode.input_gsheet_column)
-	imeta_samples_csv(gsheet_to_csv.out.samples_csv, i4)
-	samples_irods_tsv = imeta_samples_csv.out.irods_samples_tsv
-	work_dir_to_remove = imeta_samples_csv.out.work_dir_to_remove.mix(gsheet_to_csv.out.work_dir_to_remove) }
+        gsheet_to_csv(i1,i2,i3,i31)
+        i4 = Channel.from(params.google_spreadsheet_mode.input_gsheet_column)
+        imeta_samples_csv(gsheet_to_csv.out.samples_csv, i4)
+        samples_irods_tsv = imeta_samples_csv.out.irods_samples_tsv
+        work_dir_to_remove = imeta_samples_csv.out.work_dir_to_remove.mix(gsheet_to_csv.out.work_dir_to_remove)
+    }
 
     // common to all input modes:
     run_from_irods_tsv(samples_irods_tsv)
