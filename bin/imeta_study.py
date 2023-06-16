@@ -6,7 +6,7 @@ from baton.api import connect_to_irods_with_baton
 from baton.models import DataObject, SearchCriterion, ComparisonOperator
 
 
-fields_to_extract = ('sample', 'study_id', 'lane', 'id_run', 'is_paired_read', 'alignment',
+fields_to_extract = ('sample', 'study_id', 'id_run', 'lane', 'is_paired_read', 'alignment',
                      'tag_index', 'total_reads', 'md5', 'sample_supplier_name', 'study')
 
 
@@ -14,13 +14,15 @@ def read_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--baton', required=True, type=str, help='Path to folder with baton binaries')
     parser.add_argument('--study_id', required=True, type=int)
-    parser.add_argument('--run_id', type=int)
+    parser.add_argument('--run_id', type=int, nargs='*')
     parser.add_argument('--dev', action='store_true', help='Query dev zone')
     parser.add_argument('--outdir', default='./')
-    return parser.parse_args()
+    args = parser.parse_args()
+    print(args)
+    return args
 
 
-def submit_baton_query(bins: str, study_id: int, run_id: int = None, dev=False) -> List[DataObject]:
+def submit_baton_query(bins: str, study_id: int, run_id: List[int] = None, dev=False) -> List[DataObject]:
     irods = connect_to_irods_with_baton(bins, skip_baton_binaries_validation=True)
 
     # The speed of this query is dependent on the order of the attributes
@@ -30,17 +32,15 @@ def submit_baton_query(bins: str, study_id: int, run_id: int = None, dev=False) 
         SearchCriterion("manual_qc", "1", ComparisonOperator.EQUALS)
     ]
 
-    if run_id is not None:
-        search_criterions.append(
-            SearchCriterion("id_run", str(run_id), ComparisonOperator.EQUALS)
-        )
-
     data = []
     zone = 'seq-dev' if dev else 'seq'
     for filetype in ('cram', 'bam'):
         search_query = search_criterions + [SearchCriterion("type", filetype, ComparisonOperator.EQUALS)]
         out = irods.data_object.get_by_metadata(search_query, zone=zone, load_metadata=True)
         data.extend(out)
+
+    if run_id is not None:
+        data = [x for x in data if set(map(int, x.metadata.get('id_run', {}))).intersection(run_id)]
 
     return data
 
