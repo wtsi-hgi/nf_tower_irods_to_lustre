@@ -1,7 +1,3 @@
-# baton==1.0.1
-# hgicommon==1.3.1
-# 3.5 <= python <= 3.9
-
 import os.path
 import argparse
 from typing import List, Set
@@ -27,10 +23,11 @@ def read_args():
 def submit_baton_query(bins: str, study_id: int, run_id: int = None, dev=False) -> List[DataObject]:
     irods = connect_to_irods_with_baton(bins, skip_baton_binaries_validation=True)
 
+    # The speed of this query is dependent on the order of the attributes
     search_criterions = [
+        SearchCriterion("study_id", str(study_id), ComparisonOperator.EQUALS),
         SearchCriterion("target", "1", ComparisonOperator.EQUALS),
-        SearchCriterion("manual_qc", "1", ComparisonOperator.EQUALS),
-        SearchCriterion("study_id", str(study_id), ComparisonOperator.EQUALS)
+        SearchCriterion("manual_qc", "1", ComparisonOperator.EQUALS)
     ]
 
     if run_id is not None:
