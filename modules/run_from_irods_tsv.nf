@@ -18,12 +18,13 @@ workflow run_from_irods_tsv {
     if (params.run_mode == "study_id") {
         iget_study_cram(
     	    channel_samples_tsv
-	        .map{study_id, samples_tsv -> samples_tsv}
-	        .splitCsv(header: true, sep: '\t')
-	        .map{row->tuple(row.study_id, row.sample, row.object)}
-	        .filter { it[2] =~ /.cram$/ } // Need to check for bam too?
-	        .take(params.samples_to_process)
-	        .unique())
+                .map{study_id, samples_tsv -> samples_tsv}
+                .splitCsv(header: true, sep: '\t')
+                .map{row->tuple(row.study_id, row.sample, row.object)}
+                .filter { it[2] =~ /.cram$/ } // Need to check for bam too?
+                .take(params.samples_to_process)
+                .unique()
+        )
     }
     else if (params.run_mode == "csv_samples_id") {
         iget_study_cram(
@@ -32,7 +33,8 @@ workflow run_from_irods_tsv {
                 .map{row->tuple(row.study_id, row.sample, row.object)}
                 .filter { it[2] =~ /.cram$/ } // Need to check for bam too?
                 .take(params.samples_to_process)
-                .unique())
+                .unique()
+        )
     }
     else {
         // task to search Irods cellranger location for each sample:

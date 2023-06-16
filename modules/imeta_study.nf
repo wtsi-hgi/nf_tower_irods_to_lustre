@@ -18,8 +18,8 @@ process imeta_study {
 
     script:
     """
-    bash $workflow.projectDir/bin/imeta_study.sh ${study_id}
-    awk '!a[\$1]++' samples.tsv > samples_noduplicates.tsv 
+    python imeta_study.py --baton $BATON_PATH --study_id ${study_id}
+    awk '!a[\$2]++' samples.tsv > samples_noduplicates.tsv
 
     # Save work dir so that it can be removed onComplete of workflow, 
     # to ensure that this task Irods search is re-run on each run NF run, 
