@@ -18,7 +18,7 @@ process imeta_study {
 
     script:
     """
-    python imeta_study.py --baton $BATON_PATH --study_id ${study_id}
+    python $workflow.projectDir/bin/imeta_study.py --baton \$BATON_PATH --study_id ${study_id}
     awk '!a[\$2]++' samples.tsv > samples_noduplicates.tsv
 
     # Save work dir so that it can be removed onComplete of workflow, 
