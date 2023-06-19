@@ -1,20 +1,23 @@
 nextflow.enable.dsl=2
 
-// All inputs are read from Nextflow config file "inputs.nf",
-//  which is located in upstream Gitlab "nextflow_ci" repo (at same branch name).
-// Meaning that if you wish to run pipeline with different parameters,
-// you have to edit+commit+push that "inputs.nf" file, then rerun the pipeline.
-
 // import modules that depend on input mode:
 include { imeta_study } from './modules/imeta_study.nf'
 include { imeta_samples_csv } from './modules/imeta_samples_csv.nf'
 include { gsheet_to_csv } from './modules/gsheet_to_csv.nf'
+
 // module specific to google_spreadsheet input mode:
 include { join_gsheet_metadata } from './modules/join_gsheet_metadata.nf'
 include { iget_study_cram } from './modules/iget_study_cram.nf'
 
 // include workflow common to all input modes:
 include { run_from_irods_tsv } from './modules/run_from_irods_tsv.nf'
+
+
+// validate inputs
+if (params.run_crams_to_fastq & !params.run_merge_crams) {
+	printErr("Crams must be merged prior to conversion to fastq. Enable `run_merge_crams` option")
+	exit 1
+}
 
 workflow {
 
@@ -57,12 +60,12 @@ workflow {
     //		     storeDir:params.outdir)
 
     if (params.run_mode == "google_spreadsheet") {
-	// combine all samples tables (google spreadsheet, irods + cellranger metadata, cellranger /lustre file paths),
-	//   by joining on common sample column:
-	// the resulting combined tables can be fed directly as input to the Vireo deconvolution pipeline or QC pipeline.
-	join_gsheet_metadata(gsheet_to_csv.out.samples_csv,
-			     run_from_irods_tsv.out.ch_cellranger_metadata_tsv,
-			     run_from_irods_tsv.out.ch_file_paths_10x_tsv)
+        // combine all samples tables (google spreadsheet, irods + cellranger metadata, cellranger /lustre file paths),
+        //   by joining on common sample column:
+        // the resulting combined tables can be fed directly as input to the Vireo deconvolution pipeline or QC pipeline.
+        join_gsheet_metadata(gsheet_to_csv.out.samples_csv,
+                     run_from_irods_tsv.out.ch_cellranger_metadata_tsv,
+                     run_from_irods_tsv.out.ch_file_paths_10x_tsv)
     }
 }
 

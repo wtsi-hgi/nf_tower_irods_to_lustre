@@ -9,6 +9,7 @@ include { imeta_study_cellranger } from './imeta_study_cellranger.nf'
 include { iget_study_cram } from './iget_study_cram.nf'
 include { iget_study_cellranger } from './iget_study_cellranger.nf'
 include { crams_to_fastq } from './crams_to_fastq.nf'
+include { merge_crams } from './merge_crams.nf'
 
 workflow run_from_irods_tsv {
     take: channel_samples_tsv
@@ -91,21 +92,28 @@ workflow run_from_irods_tsv {
         imeta_study_cellranger.out.work_dir_to_remove
     }
 
-    // task to merge cram files of each sample and convert them to fastq
+    // task to merge cram files of each sample
     // merge by study_id and sample (Irods sanger_sample_id)
-    crams_to_fastq(iget_study_cram.out.study_sample_cram.groupTuple(by: [0,1]))
+    merge_crams(iget_study_cram.out.study_sample_cram.groupTuple(by: [0,1]))
 
-    // store the number of reads in merged cram in output tables
-    // lostcause has samples that did not pass the crams_to_fastq_min_reads input param, which is the minimum number of reads in merged cram file to try and convert to fastq.gz
-    crams_to_fastq.out.lostcause
-        .collectFile(name: "crams_to_fastq_lowreads.tsv",
-                 newLine: false, sort: true, keepHeader: true,
-                 storeDir:params.outdir)
-    // numreads has all samples that pass min number of reads number of reads in merged cram file
-    crams_to_fastq.out.numreads
-        .collectFile(name: "crams_to_fastq_numreads.tsv",
-                 newLine: false, sort: true, keepHeader: true,
-                 storeDir:params.outdir)
+    if (params.run_crams_to_fastq) {
+        // task to convert merged crams to fastq
+        crams_to_fastq(merge_crams.out.study_sample_mergedcram)
+
+        // store the number of reads in merged cram in output tables
+        // lostcause has samples that did not pass the crams_to_fastq_min_reads input param,
+        // which is the minimum number of reads in merged cram file to try and convert to fastq.gz
+        crams_to_fastq.out.lostcause
+            .collectFile(name: "crams_to_fastq_lowreads.tsv",
+                         newLine: false, sort: true, keepHeader: true,
+                         storeDir: params.outdir)
+
+        // numreads has all samples that pass min number of reads number of reads in merged cram file
+        crams_to_fastq.out.numreads
+            .collectFile(name: "crams_to_fastq_numreads.tsv",
+                         newLine: false, sort: true, keepHeader: true,
+                         storeDir: params.outdir)
+    }
 }
 
 // TODO:  here or main.nf:   // store work dirs to remove into tsv file for onComplete removal.
@@ -116,7 +124,6 @@ workflow run_from_irods_tsv {
 //		     storeDir:params.outdir)
     
 
-  	//run_from_sanger_sample_id(Channel.fromPath(params.input_samples_csv)
-	//			  .splitCsv(header: true, sep: '\t')
-	//			  .map { row -> row.sample })
-
+//run_from_sanger_sample_id(Channel.fromPath(params.input_samples_csv)
+//			  .splitCsv(header: true, sep: '\t')
+//			  .map { row -> row.sample })
