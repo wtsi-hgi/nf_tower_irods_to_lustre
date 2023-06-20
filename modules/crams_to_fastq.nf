@@ -1,6 +1,6 @@
 process crams_to_fastq {
     tag "${sample}"
-    publishDir "${params.outdir}/crams_to_fastq/fastq/${study_id}/${sample}/", mode: "${params.copy_mode}", overwrite: true, pattern: "*.fastq.gz"
+    publishDir "${params.outdir}/crams_to_fastq/fastq/", mode: "${params.copy_mode}", overwrite: true, pattern: "*.fastq.gz"
 
     when: 
         params.run_crams_to_fastq
@@ -12,7 +12,6 @@ process crams_to_fastq {
         tuple val(study_id), val(sample), path("*.fastq.gz"), emit: study_sample_fastqs
         path('*.lostcause.tsv'), emit: lostcause optional true
         path('*.numreads.tsv'), emit: numreads optional true
-        env(study_id), emit: study_id
 
     script:
     """
@@ -45,7 +44,5 @@ process crams_to_fastq {
       echo -e "study_id\\tsample\\tnumreads" > ${sample}.lostcause.tsv
       echo -e "${study_id}\\t${sample}\\t\${numreads}" >> ${sample}.lostcause.tsv
     fi
-
-    study_id=gsheet
     """
 }

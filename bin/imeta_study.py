@@ -1,11 +1,11 @@
 import os.path
 import argparse
+import logging
 from typing import List, Set
-
 from baton.api import connect_to_irods_with_baton
 from baton.models import DataObject, SearchCriterion, ComparisonOperator
 
-
+logging.basicConfig(level=logging.INFO)
 fields_to_extract = ('sample', 'study_id', 'id_run', 'lane', 'is_paired_read', 'alignment',
                      'tag_index', 'total_reads', 'md5', 'sample_supplier_name', 'study')
 
@@ -18,7 +18,7 @@ def read_args():
     parser.add_argument('--dev', action='store_true', help='Query dev zone')
     parser.add_argument('--outdir', default='./')
     args = parser.parse_args()
-    print(args)
+    logging.info(args)
     return args
 
 

@@ -1,10 +1,5 @@
 nextflow.enable.dsl=2
 
-// All inputs and the selection of which tasks to run are defined in config file "inputs.nf",
-// which is located in upstream Gitlab "nextflow_ci" repo (at same branch name).
-// Meaning that if you wish to run pipeline with different parameters/tasks,
-// you have to edit(+commit+push) that "inputs.nf" file, then (CI-)rerun the pipeline.
-
 include { imeta_study_cellranger } from './imeta_study_cellranger.nf'
 include { iget_study_cram } from './iget_study_cram.nf'
 include { iget_study_cellranger } from './iget_study_cellranger.nf'
@@ -112,6 +107,11 @@ workflow run_from_irods_tsv {
         crams_to_fastq.out.numreads
             .collectFile(name: "crams_to_fastq_numreads.tsv",
                          newLine: false, sort: true, keepHeader: true,
+                         storeDir: params.outdir)
+
+        crams_to_fastq.out.study_sample_fastqs
+            .collectFile(name: "filepath.tsv",
+                         newLine: true, keepHeader: true,
                          storeDir: params.outdir)
     }
 }

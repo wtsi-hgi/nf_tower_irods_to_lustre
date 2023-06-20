@@ -1,9 +1,7 @@
 process imeta_study {
     tag "${study_id}"
-    publishDir "${params.outdir}/imeta_study/study_id_${study_id}/", mode: 'copy', pattern: "samples.tsv", overwrite: true
-    publishDir "${params.outdir}/imeta_study/study_id_${study_id}/", mode: 'copy', pattern: "samples_noduplicates.tsv", overwrite: true
-    publishDir "${params.outdir}/", mode: 'copy', pattern: "samples.tsv", saveAs: { filename -> "${study_id}.$filename" }, overwrite: true
-    publishDir "${params.outdir}/", mode: 'copy', pattern: "samples_noduplicates.tsv", saveAs: { filename -> "${study_id}.$filename" }, overwrite: true
+    publishDir "${params.metadata_dir}", mode: 'copy', pattern: "samples.tsv", overwrite: true
+    publishDir "${params.metadata_dir}", mode: 'copy', pattern: "samples_noduplicates.tsv", overwrite: true
 
     when: 
     params.run_imeta_study

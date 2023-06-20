@@ -1,6 +1,6 @@
 process merge_crams {
     tag "${sample}"
-    publishDir "${params.outdir}/crams_to_fastq/merged_crams/${study_id}/${sample}/", mode: "${params.copy_mode}", overwrite: true, pattern: "${sample}_merged.cram"
+    publishDir "${params.outdir}/crams_to_fastq/merged_crams/", mode: "${params.copy_mode}", overwrite: true, pattern: "${sample}_merged.cram"
 
     when:
         params.run_merge_crams
