@@ -19,7 +19,7 @@ process crams_to_fastq {
     script:
     def cramfile = "${sample}_merged.cram"
     """
-    export REF_PATH=/lustre/scratch117/core/sciops_repository/cram_cache/%2s/%2s/%s:/lustre/scratch118/core/sciops_repository/cram_cache/%2s/%2s/%s:URL=http:://sf2-farm-srv1.internal.sanger.ac.uk::8000/%s
+    export REF_PATH=/lustre/scratch125/core/sciops_repository/cram_cache/%2s/%2s/%s:/lustre/scratch126/core/sciops_repository/cram_cache/%2s/%2s/%s:URL=http:://sf2-farm-srv1.internal.sanger.ac.uk::8000/%s
     export PATH=/opt/conda/envs/nf-core-rnaseq-1.3/bin:/opt/conda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     
     samtools merge -@ ${task.cpus} -f $cramfile ${crams}
