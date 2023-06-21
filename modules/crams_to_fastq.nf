@@ -1,6 +1,6 @@
 process crams_to_fastq {
     tag "${sample}"
-    publishDir "${params.outdir}/crams_to_fastq/fastq/", mode: "${params.copy_mode}", overwrite: true, pattern: "*.fastq.gz"
+    publishDir "${params.fastq_dir}", mode: "${params.copy_mode}", overwrite: true, pattern: "*.fastq.gz"
 
     when: 
         params.run_crams_to_fastq

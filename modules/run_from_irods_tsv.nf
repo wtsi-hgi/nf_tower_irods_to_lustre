@@ -91,6 +91,10 @@ workflow run_from_irods_tsv {
     // merge by study_id and sample (Irods sanger_sample_id)
     merge_crams(iget_study_cram.out.study_sample_cram.groupTuple(by: [0,1]))
 
+    // collect cram paths
+    merge_crams.out.info_file
+        .collectFile(name: "cram_paths.csv", storeDir: params.outdir, keepHeader: true)
+
     if (params.run_crams_to_fastq) {
         // task to convert merged crams to fastq
         crams_to_fastq(merge_crams.out.study_sample_mergedcram)
@@ -107,11 +111,6 @@ workflow run_from_irods_tsv {
         crams_to_fastq.out.numreads
             .collectFile(name: "crams_to_fastq_numreads.tsv",
                          newLine: false, sort: true, keepHeader: true,
-                         storeDir: params.outdir)
-
-        crams_to_fastq.out.study_sample_fastqs
-            .collectFile(name: "filepath.tsv",
-                         newLine: true, keepHeader: true,
                          storeDir: params.outdir)
     }
 }
