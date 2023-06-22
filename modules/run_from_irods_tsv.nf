@@ -93,7 +93,7 @@ workflow run_from_irods_tsv {
 
     // collect cram paths
     merge_crams.out.info_file
-        .collectFile(name: "cram_paths.csv", storeDir: params.outdir, keepHeader: true)
+        .collectFile(name: "cram_paths.csv", storeDir: params.metadata_dir, keepHeader: true)
 
     if (params.run_crams_to_fastq) {
         // task to convert merged crams to fastq
@@ -105,13 +105,17 @@ workflow run_from_irods_tsv {
         crams_to_fastq.out.lostcause
             .collectFile(name: "crams_to_fastq_lowreads.tsv",
                          newLine: false, sort: true, keepHeader: true,
-                         storeDir: params.outdir)
+                         storeDir: params.metadata_dir)
 
         // numreads has all samples that pass min number of reads number of reads in merged cram file
         crams_to_fastq.out.numreads
             .collectFile(name: "crams_to_fastq_numreads.tsv",
                          newLine: false, sort: true, keepHeader: true,
-                         storeDir: params.outdir)
+                         storeDir: params.metadata_dir)
+
+        // collect fastq paths
+        crams_to_fastq.out.info_file
+            .collectFile(name: "fastq_paths.csv", storeDir: params.metadata_dir, keepHeader: true)
     }
 }
 
