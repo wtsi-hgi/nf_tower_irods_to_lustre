@@ -52,7 +52,6 @@
                 },
                 "metadata_dir": {
                     "type": "string",
-                    "default": "${params.outdir}/metadata/",
                     "description": "The absolute path to output directory where the metadata will be saved",
                     "fa_icon": "fas fa-folder-open"
                 },
@@ -60,14 +59,12 @@
                     "type": "string",
                     "format": "directory-path",
                     "description": "The absolute path to directory where the CRAM files will be copied, from the work directory",
-                    "default": "${params.outdir}/crams/",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "reportdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The directory where the pipeline reports will be saved. You have to use absolute paths",
-                    "default": "${params.outdir}/reports/",
                     "fa_icon": "fas fa-folder-open"
                 }
             }
