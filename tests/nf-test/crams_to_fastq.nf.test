@@ -1,0 +1,31 @@
+nextflow_process {
+
+    name "Test Process crams_to_fastq"
+    script "modules/crams_to_fastq.nf"
+    process "crams_to_fastq"
+
+    test("Should run without failures and produce fastq files") {
+        def study_id = 7777
+        def sample = 'dummy_sample'
+        when {
+            params {
+                run_crams_to_fastq = true
+                crams_to_fastq_min_reads = 10
+            }
+            process {
+                """
+                input[0] = tuple 7777, 'dummy_sample', file("tests/data/small.cram")
+                """
+            }
+        }
+        then {
+            assert process.success
+            with (process.out.study_sample_fastqs.get(0)) {
+                assert size() == 3
+                assert get(0) == study_id
+                assert get(1) == sample
+                assert get(2).size() >= 2
+            }
+        }
+    }
+}
