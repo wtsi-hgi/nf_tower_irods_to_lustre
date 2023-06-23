@@ -20,7 +20,7 @@ process crams_to_fastq {
     f2=${sample}_2.fastq.gz
     f0=${sample}.fastq.gz
 
-    echo "study_id,sample_id,fastq1,fastq1" > info.csv
+    echo "study_id,sample_id,fastq1,fastq2" > info.csv
 
     numreads=\$(samtools view -c -F 0x900 $cramfile)
     if (( \$numreads >= ${params.crams_to_fastq_min_reads} )); then
@@ -42,7 +42,7 @@ process crams_to_fastq {
           -1 \$f1 -2 \$f2 -0 \$f0 \\
           -
       sleep 2
-      echo "${study_id},${sample},\$f1,\$f2" > info.csv
+      echo "${study_id},${sample},\$f1,\$f2" >> info.csv
 
     else
       echo -e "study_id\\tsample\\tnumreads" > ${sample}.lostcause.tsv
