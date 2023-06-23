@@ -5,7 +5,7 @@ from typing import List, Set
 from baton.api import connect_to_irods_with_baton
 from baton.models import DataObject, SearchCriterion, ComparisonOperator
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 fields_to_extract = ('sample', 'study_id', 'id_run', 'lane', 'is_paired_read', 'alignment',
                      'tag_index', 'total_reads', 'md5', 'sample_supplier_name', 'study')
 
@@ -18,7 +18,7 @@ def read_args():
     parser.add_argument('--dev', action='store_true', help='Query dev zone')
     parser.add_argument('--outdir', default='./')
     args = parser.parse_args()
-    logging.debug(args)
+    logging.info(args)
     return args
 
 
@@ -32,15 +32,18 @@ def submit_baton_query(bins: str, study_id: int, run_ids: List[int] = None, dev=
     search_criterions = [
         SearchCriterion("study_id", str(study_id), ComparisonOperator.EQUALS),
         SearchCriterion("target", "1", ComparisonOperator.EQUALS),
-        SearchCriterion("manual_qc", "1", ComparisonOperator.EQUALS)
     ]
+    # adding this condition to the query slows down it drastically so doing post-filtering instead
+    # SearchCriterion("manual_qc", "1", ComparisonOperator.EQUALS)
 
     data = []
     zone = 'seq-dev' if dev else 'seq'
     for filetype in ('cram', 'bam'):
         search_query = search_criterions + [SearchCriterion("type", filetype, ComparisonOperator.EQUALS)]
         out = irods.data_object.get_by_metadata(search_query, zone=zone, load_metadata=True)
-        data.extend(out)
+        for data_object in out:
+            if data_object.metadata.get("manual_qc") == {'1'}:
+                data.append(data_object)
 
     if run_ids is not None:
         data = [x for x in data if set(map(int, x.metadata.get('id_run', {}))).intersection(run_ids)]

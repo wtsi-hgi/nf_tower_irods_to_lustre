@@ -42,7 +42,6 @@ process crams_to_fastq {
           -1 \$f1 -2 \$f2 -0 \$f0 \\
           -
       sleep 2
-      find . -name \"*.fastq.gz\" -type 'f' -size -160k -delete
       echo "${study_id},${sample},\$f1,\$f2" > info.csv
 
     else
