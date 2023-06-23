@@ -22,7 +22,10 @@ def read_args():
     return args
 
 
-def submit_baton_query(bins: str, study_id: int, run_id: List[int] = None, dev=False) -> List[DataObject]:
+def submit_baton_query(bins: str, study_id: int, run_ids: List[int] = None, dev=False) -> List[DataObject]:
+    """
+    Search iRODS objects for specified study and/or run
+    """
     irods = connect_to_irods_with_baton(bins, skip_baton_binaries_validation=True)
 
     # The speed of this query is dependent on the order of the attributes
@@ -39,8 +42,8 @@ def submit_baton_query(bins: str, study_id: int, run_id: List[int] = None, dev=F
         out = irods.data_object.get_by_metadata(search_query, zone=zone, load_metadata=True)
         data.extend(out)
 
-    if run_id is not None:
-        data = [x for x in data if set(map(int, x.metadata.get('id_run', {}))).intersection(run_id)]
+    if run_ids is not None:
+        data = [x for x in data if set(map(int, x.metadata.get('id_run', {}))).intersection(run_ids)]
 
     return data
 
