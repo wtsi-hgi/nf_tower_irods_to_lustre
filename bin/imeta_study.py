@@ -37,6 +37,11 @@ def submit_baton_query(bins: str, study_id: int, run_ids: List[int] = None, dev=
     # adding this condition to the query slows down it drastically so doing post-filtering instead
     # SearchCriterion("manual_qc", "1", ComparisonOperator.EQUALS)
 
+    if run_ids is not None and len(run_ids) == 1:  # to speed up some queries
+        search_criterions.append(
+            SearchCriterion("id_run", str(run_ids[0]), ComparisonOperator.EQUALS)
+        )
+
     zone = 'seq-dev' if dev else 'seq'
     out = irods.data_object.get_by_metadata(search_criterions, zone=zone, load_metadata=True)
 
