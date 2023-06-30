@@ -31,19 +31,20 @@ def submit_baton_query(bins: str, study_id: int, run_ids: List[int] = None, dev=
     # The speed of this query is dependent on the order of the attributes
     search_criterions = [
         SearchCriterion("study_id", str(study_id), ComparisonOperator.EQUALS),
-        SearchCriterion("target", "1", ComparisonOperator.EQUALS),
+        SearchCriterion("type", 'cram', ComparisonOperator.EQUALS),
+        SearchCriterion("target", "1", ComparisonOperator.EQUALS)
     ]
     # adding this condition to the query slows down it drastically so doing post-filtering instead
     # SearchCriterion("manual_qc", "1", ComparisonOperator.EQUALS)
 
-    data = []
     zone = 'seq-dev' if dev else 'seq'
-    for filetype in ('cram', 'bam'):
-        search_query = search_criterions + [SearchCriterion("type", filetype, ComparisonOperator.EQUALS)]
-        out = irods.data_object.get_by_metadata(search_query, zone=zone, load_metadata=True)
-        for data_object in out:
-            if data_object.metadata.get("manual_qc") == {'1'}:
-                data.append(data_object)
+    out = irods.data_object.get_by_metadata(search_criterions, zone=zone, load_metadata=True)
+
+    data = []
+    logging.info('Filtering baton output by manual_qc = 1')
+    for data_object in out:
+        if data_object.metadata.get("manual_qc") == {'1'}:
+            data.append(data_object)
 
     if run_ids is not None:
         data = [x for x in data if set(map(int, x.metadata.get('id_run', {}))).intersection(run_ids)]
@@ -61,17 +62,13 @@ def validate_sanity(data: List[DataObject]):
     if len(data) == 0:
         raise ValueError('No objects found in iRODS')
 
-    objects = {x.path.replace('.bam', '.cram') for x in data}  # we do not care which file type is it
-    samples = set.union(*[x.metadata.get('sample') for x in data])
-    if len(samples) != len(objects):
-        raise ValueError(f'There is unequal number of files [{len(objects)}] and samples [{len(samples)}]')
-
 
 def extract_metadata(data: List[DataObject]) -> List[List[str]]:
     """
     Simplify objects to nested list of target fields
     """
     metadata = []
+    logging.info('Extracting metadata')
     for obj in data:
         values = [obj.path, *map(lambda x: obj.metadata.get(x, ''), fields_to_extract)]
         for value in values:  # we expect only one value for each field, raise error otherwise

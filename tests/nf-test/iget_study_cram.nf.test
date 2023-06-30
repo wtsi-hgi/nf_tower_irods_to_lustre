@@ -1,0 +1,29 @@
+nextflow_process {
+
+    name "Test Process iget_study_cram"
+    script "modules/iget_study_cram.nf"
+    process "iget_study_cram"
+
+    test("Should run without failures and produce cram file") {
+        when {
+            params {
+                run_iget_study_cram = true
+            }
+            process {
+                """
+                input[0] = tuple 10754, 'dummy_sample', '/seq/10754/10754_1#20.cram'
+                """
+            }
+        }
+        then {
+            assert process.success
+            with (process.out.study_sample_cram.get(0)) {
+                assert size() == 3
+                assert get(0) == 10754
+                assert get(1) == 'dummy_sample'
+                assert get(2) ==~ '.*/dummy_sample.10754_1_20.cram'
+                assert snapshot(get(2)).match()
+            }
+        }
+    }
+}

@@ -9,7 +9,7 @@ process crams_to_fastq {
         tuple val(study_id), val(sample), path(cramfile)
 
     output: 
-        tuple val(study_id), val(sample), path("*.fastq.gz"), emit: study_sample_fastqs
+        tuple val(study_id), val(sample), path("*.fastq.gz"), emit: study_sample_fastqs optional true
         path('*.lostcause.tsv'), emit: lostcause optional true
         path('*.numreads.tsv'), emit: numreads optional true
         path('info.csv'), emit: info_file
@@ -42,7 +42,7 @@ process crams_to_fastq {
           -1 \$f1 -2 \$f2 -0 \$f0 \\
           -
       sleep 2
-      echo "${study_id},${sample},\$f1,\$f2" >> info.csv
+      echo "${study_id},${sample},${params.fastq_dir}/\$f1,${params.fastq_dir}/\$f2" >> info.csv
 
     else
       echo -e "study_id\\tsample\\tnumreads" > ${sample}.lostcause.tsv
