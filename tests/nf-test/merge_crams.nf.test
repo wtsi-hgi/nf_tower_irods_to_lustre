@@ -1,0 +1,30 @@
+nextflow_process {
+
+    name "Test Process merge_crams"
+    script "modules/merge_crams.nf"
+    process "merge_crams"
+
+    test("Should run without failures and produce one cram file") {
+        def study_id = 7777
+        def sample = 'dummy_sample'
+        when {
+            params {
+                run_merge_crams = true
+            }
+            process {
+                """
+                input[0] = tuple 7777, 'dummy_sample', file("tests/data/small.cram")
+                """
+            }
+        }
+        then {
+            assert process.success
+            with (process.out.study_sample_mergedcram.get(0)) {
+                assert size() == 3
+                assert get(0) == study_id
+                assert get(1) == sample
+                assert get(2) ==~ ".*_merged.cram"
+            }
+        }
+    }
+}

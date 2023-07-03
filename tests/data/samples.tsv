@@ -1,0 +1,3 @@
+object	sample	study_id	id_run	lane	is_paired_read	alignment	tag_index	total_reads	md5	sample_supplier_name	study
+/seq/22532/22532_1#120.cram	3948STDY6889608	3948	22532	1	1	1	120	16	afbdd9ddfe0f473a0269559a276a2361	SCGC--2175_C12	SCGCF	pipeline	validation
+/seq/22532/22532_2#120.cram	3948STDY6889608	3948	22532	2	1	1	120	24	411caf8d2d415414c436191a274a046d	SCGC--2175_C12	SCGCF	pipeline	validation

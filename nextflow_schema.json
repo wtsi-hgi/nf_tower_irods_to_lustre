@@ -25,33 +25,46 @@
                     "description": "Number of files to process (-1 means all of them)",
                     "type": "integer",
                     "default": 1,
-                    "fa_icon": "fas fa-angle-double-right"
+                    "fa_icon": "fas fa-gear"
+                },
+                "run_merge_crams": {
+                    "type": "boolean",
+                    "description": "Run task to merge crams of each sample",
+                    "default": true,
+                    "fa_icon": "fas fa-gear"
                 },
                 "run_crams_to_fastq": {
                     "type": "boolean",
-                    "description": "Run task to merge and convert crams of each sample to fastq",
+                    "description": "Run task to convert merged crams of each sample to fastq",
                     "default": true,
-                    "fa_icon": "fas fa-angle-double-right"
+                    "fa_icon": "fas fa-gear"
+                },
+                "crams_to_fastq_min_reads": {
+                    "type": "integer",
+                    "description": "minimum number of reads in merged cram file to try and convert to fastq.gz",
+                    "fa_icon": "fas fa-gear"
                 },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
-                    "description": "The output directory where the results will be saved. You have to use absolute paths.",
-                    "default": "${projectDir}/outdir",
+                    "description": "The absolute path to output directory where the results will be saved",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "metadata_dir": {
+                    "type": "string",
+                    "description": "The absolute path to output directory where the metadata will be saved",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "cram_output_dir": {
                     "type": "string",
                     "format": "directory-path",
-                    "description": "The directory where the CRAM files will be copied, from the work directory. You have to use absolute paths ",
-                    "default": "${projectDir}/outdir/crams",
+                    "description": "The absolute path to directory where the CRAM files will be copied, from the work directory",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "reportdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The directory where the pipeline reports will be saved. You have to use absolute paths",
-                    "default": "${projectDir}/reportdir",
                     "fa_icon": "fas fa-folder-open"
                 }
             }
@@ -76,7 +89,7 @@
                 },
                 "input_study_runs": {
                     "type": "string",
-                    "description": "Comma-separated list of run ids. Leave blank if you want to extract all samples",
+                    "description": "Space-separated list of run ids. Leave blank if you want to extract all samples",
                     "default": null,
                     "fa_icon": "fas fa-angle-double-right"
                 }

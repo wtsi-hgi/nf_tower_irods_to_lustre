@@ -1,0 +1,69 @@
+nextflow_process {
+
+    name "Test Process imeta_study"
+    script "modules/imeta_study.nf"
+    process "imeta_study"
+
+    test("Should fail") {
+        when {
+            params {
+                run_imeta_study = true
+            }
+            process {
+                """
+                input[0] = 7777
+                input[1] = []
+                """
+            }
+        }
+        then {
+            assert process.failed
+        }
+    }
+
+    test("Should run without failures and produce samples.tsv") {
+        def study_id = 6900
+        when {
+            params {
+                run_imeta_study = true
+            }
+            process {
+                """
+                input[0] = 6900
+                input[1] = []
+                """
+            }
+        }
+        then {
+            assert process.success
+            with (process.out.irods_samples_tsv.get(0)) {
+                assert size() == 2
+                assert get(0) == study_id
+                assert path(get(1)).readLines().size() == 214
+            }
+        }
+    }
+
+    test("Should run without failures and produce samples.tsv for 1 run") {
+        def study_id = 6900
+        when {
+            params {
+                run_imeta_study = true
+            }
+            process {
+                """
+                input[0] = 6900
+                input[1] = 45347
+                """
+            }
+        }
+        then {
+            assert process.success
+            with (process.out.irods_samples_tsv.get(0)) {
+                assert size() == 2
+                assert get(0) == study_id
+                assert path(get(1)).readLines().size() == 143
+            }
+        }
+    }
+}
