@@ -10,7 +10,7 @@ include { join_gsheet_metadata } from './modules/join_gsheet_metadata.nf'
 include { iget_study_cram } from './modules/iget_study_cram.nf'
 
 // include workflow common to all input modes:
-include { run_from_irods_tsv } from './modules/run_from_irods_tsv.nf'
+include { run_from_irods_tsv } from './subworkflows/local/run_from_irods_tsv.nf'
 
 
 // validate inputs

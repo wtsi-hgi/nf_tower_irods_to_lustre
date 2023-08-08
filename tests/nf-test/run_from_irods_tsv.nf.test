@@ -1,7 +1,7 @@
 nextflow_workflow {
 
     name "Test run_from_irods_tsv workflow"
-    script "modules/run_from_irods_tsv.nf"
+    script "subworkflows/local/run_from_irods_tsv.nf"
     workflow "run_from_irods_tsv"
 
     test("Should run without failures") {
