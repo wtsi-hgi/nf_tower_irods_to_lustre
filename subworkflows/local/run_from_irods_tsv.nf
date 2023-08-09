@@ -1,10 +1,11 @@
 nextflow.enable.dsl=2
 
-include { imeta_study_cellranger } from './imeta_study_cellranger.nf'
-include { iget_study_cram } from './iget_study_cram.nf'
-include { iget_study_cellranger } from './iget_study_cellranger.nf'
-include { crams_to_fastq } from './crams_to_fastq.nf'
-include { merge_crams } from './merge_crams.nf'
+include { imeta_study_cellranger } from '../../modules/imeta_study_cellranger.nf'
+include { iget_study_cram } from '../../modules/iget_study_cram.nf'
+include { iget_study_cellranger } from '../../modules/iget_study_cellranger.nf'
+include { crams_to_fastq } from '../../modules/crams_to_fastq.nf'
+include { merge_crams } from '../../modules/merge_crams.nf'
+include { ANY_CRAM_TO_FASTQ } from './cram_to_fastq.nf'
 
 workflow run_from_irods_tsv {
     take: channel_samples_tsv

@@ -14,7 +14,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = tuple [study_id: 7777, id: 'dummy_sample'], file("tests/data/small.cram")
+                input[0] = tuple [study_id: 7777, id: 'dummy_sample', single_end: false], file("tests/data/small.cram")
                 """
             }
         }
@@ -34,17 +34,17 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = tuple [study_id: 7777, id: 'dummy_sample'], file("tests/data/small.cram")
+                input[0] = tuple [study_id: 7777, id: 'dummy_sample', single_end: false], file("tests/data/small.cram")
                 """
             }
         }
         then {
             assert process.success
             with (process.out.study_sample_fastqs.get(0)) {
-                assert size() == 3
-                assert get(0) == study_id
-                assert get(1) == sample
-                assert get(2).size() >= 2
+                assert size() == 2
+                assert get(0).study_id == study_id
+                assert get(0).id == sample
+                assert get(1).size() >= 2
             }
         }
     }

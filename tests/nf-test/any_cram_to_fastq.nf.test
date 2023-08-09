@@ -1,7 +1,7 @@
 nextflow_workflow {
 
     name "Test any_cram_to_fastq workflow"
-    script "subworflows/local/cram_to_fastq.nf"
+    script "subworkflows/local/cram_to_fastq.nf"
     workflow "ANY_CRAM_TO_FASTQ"
 
     test("Should run without failures") {
