@@ -20,10 +20,10 @@ process crams_to_fastq {
 
     def f1 = "${sample}_1.fastq.gz"
     def f2 = "${sample}_2.fastq.gz"
-    def fo = "${sample}_other.fastq.gz"
     def f0 = "${sample}.fastq.gz"
 
-    def output = meta.single_end ? "-o ${f0}"                : "-N -1 ${f1} -2 ${f2}"
+    // for SE-reads NPG set neither read1 nor read2 bits
+    def output = meta.single_end ? ""                        : "-N -1 ${f1} -2 ${f2}"
     def header = meta.single_end ? "fastq"                   : "fastq1,fastq2"
     def row    = meta.single_end ? "${params.fastq_dir}/$f0" : "${params.fastq_dir}/$f1,${params.fastq_dir}/$f2"
 
@@ -47,7 +47,7 @@ process crams_to_fastq {
       samtools fastq      \\
           -F 0x900        \\
           -@ ${task.cpus} \\
-          -0 $fo \\
+          -0 $f0 \\
           $output \\
           -
       sleep 2

@@ -49,3 +49,5 @@ nextflow_process {
         }
     }
 }
+
+// single_end cram: /seq/8734/8734_1#9.cram
