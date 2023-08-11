@@ -11,7 +11,7 @@ nextflow_workflow {
             }
             workflow {
                 """
-                input[0] = Channel.of( [777, 'test'] )
+                input[0] = Channel.of( [study_id: 777, id: 'test'] )
                                   .combine( Channel.fromPath('tests/data/small.cram') )
                 """
             }

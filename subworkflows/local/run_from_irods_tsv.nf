@@ -7,6 +7,20 @@ include { crams_to_fastq } from '../../modules/crams_to_fastq.nf'
 include { merge_crams } from '../../modules/merge_crams.nf'
 include { ANY_CRAM_TO_FASTQ } from './cram_to_fastq.nf'
 
+def create_input_channel(channel_samples_tsv) {
+    channel_samples_tsv
+        .splitCsv(header: true, sep: '\t')
+        .map{ row -> tuple(
+            [study_id: row.study_id, id: row.sample] + (row.is_paired_read ? [single_end: !row.is_paired_read.toBoolean()] : [:]),
+            row.object
+        ) }
+        .filter { it[1] =~ /.cram$/ }
+        .groupTuple(by: 0)
+        .take(params.samples_to_process)
+        .transpose()
+        .unique()
+}
+
 workflow run_from_irods_tsv {
     take: channel_samples_tsv
     main:
@@ -18,17 +32,10 @@ workflow run_from_irods_tsv {
 	    exit 1
     }
 
+    input = create_input_channel(channel_samples_tsv)
+
     // task to iget all Irods cram files of all samples
-    iget_study_cram(
-        channel_samples_tsv
-            .splitCsv(header: true, sep: '\t')
-            .map{ row -> tuple(row.study_id, row.sample, row.object) }
-            .filter { it[2] =~ /.cram$/ }
-            .groupTuple(by: [0,1])
-            .take(params.samples_to_process)
-            .transpose()
-            .unique()
-    )
+    iget_study_cram(input)
 
     if (params.run_mode == "google_spreadsheet") {
         // task to search Irods cellranger location for each sample:
@@ -87,7 +94,7 @@ workflow run_from_irods_tsv {
 
     // task to merge cram files of each sample
     // merge by study_id and sample (Irods sanger_sample_id)
-    merge_crams(iget_study_cram.out.study_sample_cram.groupTuple(by: [0,1]))
+    merge_crams(iget_study_cram.out.study_sample_cram.groupTuple(by: 0))
 
     // collect cram paths
     merge_crams.out.info_file
