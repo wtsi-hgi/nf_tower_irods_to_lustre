@@ -1,0 +1,20 @@
+nextflow_process {
+
+    name "Test Process samtools_count"
+    script "modules/local/samtools/count/main.nf"
+    process "SAMTOOLS_COUNT"
+
+    test("Should run without failures") {
+        when {
+            process {
+                """
+                input[0] = tuple ['id': 'test'], file("tests/data/small.cram")
+                """
+            }
+        }
+        then {
+            assert process.success
+            assert process.out.count.get(0)[1].toInteger() == 12
+        }
+    }
+}

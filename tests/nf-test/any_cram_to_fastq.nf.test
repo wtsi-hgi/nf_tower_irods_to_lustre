@@ -1,0 +1,24 @@
+nextflow_workflow {
+
+    name "Test any_cram_to_fastq workflow"
+    script "subworkflows/local/cram_to_fastq.nf"
+    workflow "ANY_CRAM_TO_FASTQ"
+
+    test("Should run without failures") {
+        when {
+            params {
+                crams_to_fastq_min_reads = 10
+            }
+            workflow {
+                """
+                input[0] = Channel.of( [study_id: 777, id: 'test'] )
+                                  .combine( Channel.fromPath('tests/data/small.cram') )
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+        }
+    }
+}

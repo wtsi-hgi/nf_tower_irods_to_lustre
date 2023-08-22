@@ -1,10 +1,25 @@
 nextflow.enable.dsl=2
 
-include { imeta_study_cellranger } from './imeta_study_cellranger.nf'
-include { iget_study_cram } from './iget_study_cram.nf'
-include { iget_study_cellranger } from './iget_study_cellranger.nf'
-include { crams_to_fastq } from './crams_to_fastq.nf'
-include { merge_crams } from './merge_crams.nf'
+include { imeta_study_cellranger } from '../../modules/imeta_study_cellranger.nf'
+include { iget_study_cram } from '../../modules/iget_study_cram.nf'
+include { iget_study_cellranger } from '../../modules/iget_study_cellranger.nf'
+include { crams_to_fastq } from '../../modules/crams_to_fastq.nf'
+include { merge_crams } from '../../modules/merge_crams.nf'
+include { ANY_CRAM_TO_FASTQ } from './cram_to_fastq.nf'
+
+def create_input_channel(channel_samples_tsv) {
+    channel_samples_tsv
+        .splitCsv(header: true, sep: '\t')
+        .map{ row -> tuple(
+            [study_id: row.study_id, id: row.sample] + (row.is_paired_read ? [single_end: !row.is_paired_read.toBoolean()] : [:]),
+            row.object
+        ) }
+        .filter { it[1] =~ /.cram$/ }
+        .groupTuple(by: 0)
+        .take(params.samples_to_process)
+        .transpose()
+        .unique()
+}
 
 workflow run_from_irods_tsv {
     take: channel_samples_tsv
@@ -17,17 +32,10 @@ workflow run_from_irods_tsv {
 	    exit 1
     }
 
+    input = create_input_channel(channel_samples_tsv)
+
     // task to iget all Irods cram files of all samples
-    iget_study_cram(
-        channel_samples_tsv
-            .splitCsv(header: true, sep: '\t')
-            .map{ row -> tuple(row.study_id, row.sample, row.object) }
-            .filter { it[2] =~ /.cram$/ }
-            .groupTuple(by: [0,1])
-            .take(params.samples_to_process)
-            .transpose()
-            .unique()
-    )
+    iget_study_cram(input)
 
     if (params.run_mode == "google_spreadsheet") {
         // task to search Irods cellranger location for each sample:
@@ -86,7 +94,7 @@ workflow run_from_irods_tsv {
 
     // task to merge cram files of each sample
     // merge by study_id and sample (Irods sanger_sample_id)
-    merge_crams(iget_study_cram.out.study_sample_cram.groupTuple(by: [0,1]))
+    merge_crams(iget_study_cram.out.study_sample_cram.groupTuple(by: 0))
 
     // collect cram paths
     merge_crams.out.info_file
@@ -94,24 +102,24 @@ workflow run_from_irods_tsv {
 
     if (params.run_crams_to_fastq) {
         // task to convert merged crams to fastq
-        crams_to_fastq(merge_crams.out.study_sample_mergedcram)
+        ANY_CRAM_TO_FASTQ(merge_crams.out.study_sample_mergedcram)
 
         // store the number of reads in merged cram in output tables
         // lostcause has samples that did not pass the crams_to_fastq_min_reads input param,
         // which is the minimum number of reads in merged cram file to try and convert to fastq.gz
-        crams_to_fastq.out.lostcause
+        ANY_CRAM_TO_FASTQ.out.lostcause
             .collectFile(name: "crams_to_fastq_lowreads.tsv",
                          newLine: false, sort: true, keepHeader: true,
                          storeDir: params.metadata_dir)
 
         // numreads has all samples that pass min number of reads number of reads in merged cram file
-        crams_to_fastq.out.numreads
+        ANY_CRAM_TO_FASTQ.out.numreads
             .collectFile(name: "crams_to_fastq_numreads.tsv",
                          newLine: false, sort: true, keepHeader: true,
                          storeDir: params.metadata_dir)
 
         // collect fastq paths
-        crams_to_fastq.out.info_file
+        ANY_CRAM_TO_FASTQ.out.info_file
             .collectFile(name: "fastq_paths.csv", storeDir: params.metadata_dir, keepHeader: true)
     }
 }

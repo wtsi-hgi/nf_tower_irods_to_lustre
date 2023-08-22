@@ -1,18 +1,20 @@
 process merge_crams {
-    tag "${sample}"
-    publishDir "${params.merged_crams_dir}", mode: "${params.copy_mode}", overwrite: true, pattern: "${sample}_merged.cram"
+    tag "${meta.id}"
+    publishDir "${params.merged_crams_dir}", mode: "${params.copy_mode}", overwrite: true, pattern: "${meta.id}_merged.cram"
 
     when:
         params.run_merge_crams
 
     input:
-        tuple val(study_id), val(sample), path(crams)
+        tuple val(meta), path(crams)
 
     output:
-        tuple val(study_id), val(sample), path("${sample}_merged.cram"), emit: study_sample_mergedcram
+        tuple val(meta), path("${meta.id}_merged.cram"), emit: study_sample_mergedcram
         path("info.csv"), emit: info_file
 
     script:
+    def sample = meta.id
+    def study_id = meta.study_id
     def cramfile = "${sample}_merged.cram"
     """
     samtools merge -@ ${task.cpus} -f $cramfile ${crams}

@@ -1,7 +1,7 @@
 nextflow_workflow {
 
     name "Test run_from_irods_tsv workflow"
-    script "modules/run_from_irods_tsv.nf"
+    script "subworkflows/local/run_from_irods_tsv.nf"
     workflow "run_from_irods_tsv"
 
     test("Should run without failures") {
@@ -45,6 +45,27 @@ nextflow_workflow {
         then {
             assert workflow.success
             assert workflow.trace.tasks().size() == 4
+        }
+    }
+
+    test("Should run without failures for SE reads") {
+        when {
+            params {
+                run_mode = "csv_samples_id"
+                run_merge_crams = true
+                run_crams_to_fastq = true
+                crams_to_fastq_min_reads = 10
+            }
+            workflow {
+                """
+                input[0] = Channel.fromPath('tests/data/se-samples.tsv')
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().size() == 3
         }
     }
 }

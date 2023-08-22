@@ -1,4 +1,5 @@
 nextflow.enable.dsl=2
+def printErr = System.err.&println
 
 // import modules that depend on input mode:
 include { imeta_study } from './modules/imeta_study.nf'
@@ -10,12 +11,12 @@ include { join_gsheet_metadata } from './modules/join_gsheet_metadata.nf'
 include { iget_study_cram } from './modules/iget_study_cram.nf'
 
 // include workflow common to all input modes:
-include { run_from_irods_tsv } from './modules/run_from_irods_tsv.nf'
+include { run_from_irods_tsv } from './subworkflows/local/run_from_irods_tsv.nf'
 
 
 // validate inputs
 if (params.run_crams_to_fastq & !params.run_merge_crams) {
-	printErr("Crams must be merged prior to conversion to fastq. Enable `run_merge_crams` option")
+	printErr("Error: Crams must be merged prior to conversion to fastq. Enable `run_merge_crams` option")
 	exit 1
 }
 

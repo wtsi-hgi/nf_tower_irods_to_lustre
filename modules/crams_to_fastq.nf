@@ -1,26 +1,35 @@
 process crams_to_fastq {
-    tag "${sample}"
+    tag "${meta.id}"
     publishDir "${params.fastq_dir}", mode: "${params.copy_mode}", overwrite: true, pattern: "*.fastq.gz"
 
     when: 
         params.run_crams_to_fastq
     
-    input: 
-        tuple val(study_id), val(sample), path(cramfile)
+    input:
+        tuple val(meta), path(cramfile)
 
     output: 
-        tuple val(study_id), val(sample), path("*.fastq.gz"), emit: study_sample_fastqs optional true
+        tuple val(meta), path("*.fastq.gz"), emit: study_sample_fastqs optional true
         path('*.lostcause.tsv'), emit: lostcause optional true
         path('*.numreads.tsv'), emit: numreads optional true
         path('info.csv'), emit: info_file
 
     script:
-    """
-    f1=${sample}_1.fastq.gz
-    f2=${sample}_2.fastq.gz
-    f0=${sample}.fastq.gz
+    def sample = meta.id
+    def study_id = meta.study_id
 
-    echo "study_id,sample_id,fastq1,fastq2" > info.csv
+    def f1 = "${sample}_1.fastq.gz"
+    def f2 = "${sample}_2.fastq.gz"
+    def f0 = "${sample}.fastq.gz"
+
+    // for SE-reads NPG set neither read1 nor read2 bits
+    def output = meta.single_end ? ""                        : "-N -1 ${f1} -2 ${f2}"
+    def header = meta.single_end ? "fastq"                   : "fastq1,fastq2"
+    def row    = meta.single_end ? "${params.fastq_dir}/$f0" : "${params.fastq_dir}/$f1,${params.fastq_dir}/$f2"
+
+    """
+
+    echo "study_id,sample_id,$header" > info.csv
 
     numreads=\$(samtools view -c -F 0x900 $cramfile)
     if (( \$numreads >= ${params.crams_to_fastq_min_reads} )); then
@@ -36,13 +45,13 @@ process crams_to_fastq {
           -@ ${task.cpus} \\
           $cramfile pfx-${sample} | \\
       samtools fastq      \\
-          -N              \\
           -F 0x900        \\
           -@ ${task.cpus} \\
-          -1 \$f1 -2 \$f2 -0 \$f0 \\
+          -0 $f0 \\
+          $output \\
           -
       sleep 2
-      echo "${study_id},${sample},${params.fastq_dir}/\$f1,${params.fastq_dir}/\$f2" >> info.csv
+      echo "${study_id},${sample},$row" >> info.csv
 
     else
       echo -e "study_id\\tsample\\tnumreads" > ${sample}.lostcause.tsv
