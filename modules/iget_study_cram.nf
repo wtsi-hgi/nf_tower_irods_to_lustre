@@ -15,8 +15,8 @@ process 'iget_study_cram' {
     script:
     def sample = meta.id
     def filename = file(cram_irods_object).baseName
-    (parsed, run_parsed, lane_parsed, cell_parsed) = (filename =~ /(\d+)_(\d+)#(\d+)/)[0]
-    outname = String.format("%s.%s_%s_%s.cram", sample, run_parsed, lane_parsed, cell_parsed)
+    def (parsed, prefix, cell_parsed) = (filename =~ /([\d_]+)#(\d+)/)[0]
+    def outname = String.format("%s.%s_%s.cram", sample, prefix, cell_parsed)
     """
     iget -K -f -I -v ${cram_irods_object} ${outname}
     # get index file if exists:
