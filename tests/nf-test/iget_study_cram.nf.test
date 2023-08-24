@@ -27,26 +27,27 @@ nextflow_process {
         }
     }
 
-    test("Should run without failures and produce cram file for NovaSeq crams") {
-        when {
-            params {
-                run_iget_study_cram = true
-            }
-            process {
-                """
-                input[0] = tuple [study_id: 7135, id: 'dummy_sample'], '/seq/illumina/runs/47/47579/plex70/47579#70.cram'
-                """
-            }
-        }
-        then {
-            assert process.success
-            with (process.out.study_sample_cram.get(0)) {
-                assert size() == 2
-                assert get(0)['study_id'] == 7135
-                assert get(0)['id'] == 'dummy_sample'
-                assert get(1) ==~ '.*/dummy_sample.47579_70.cram'
-                assert snapshot(get(1)).match()
-            }
-        }
-    }
+    // test requires access to the dataset
+    // test("Should run without failures and produce cram file for NovaSeq crams") {
+    //     when {
+    //         params {
+    //             run_iget_study_cram = true
+    //         }
+    //         process {
+    //             """
+    //             input[0] = tuple [study_id: 7135, id: 'dummy_sample'], '/seq/illumina/runs/47/47579/plex70/47579#70.cram'
+    //             """
+    //         }
+    //     }
+    //     then {
+    //         assert process.success
+    //         with (process.out.study_sample_cram.get(0)) {
+    //             assert size() == 2
+    //             assert get(0)['study_id'] == 7135
+    //             assert get(0)['id'] == 'dummy_sample'
+    //             assert get(1) ==~ '.*/dummy_sample.47579_70.cram'
+    //             assert snapshot(get(1)).match()
+    //         }
+    //     }
+    // }
 }
