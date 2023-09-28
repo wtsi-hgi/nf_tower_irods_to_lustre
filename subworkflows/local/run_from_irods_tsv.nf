@@ -16,7 +16,7 @@ def create_input_channel(channel_samples_tsv) {
         ) }
         .filter { it[1] =~ /.cram$/ }
         .groupTuple(by: 0)
-        .take(params.samples_to_process)
+        .take(params.samples_to_process.toInteger())
         .transpose()
         .unique()
 }
