@@ -12,7 +12,8 @@
             "description": "Define where the pipeline should find input data and save output data.",
             "required": [
                 "run_mode",
-                "outdir"
+                "outdir",
+                "copy_mode"
             ],
             "properties": {
                 "run_mode": {
