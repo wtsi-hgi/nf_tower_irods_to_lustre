@@ -9,6 +9,7 @@ process imeta_study {
     input: 
     val(study_id)
     val(run_id)
+    val(filter_manual_qc)
 
     output: 
     tuple val(study_id), path('samples.tsv'), emit: irods_samples_tsv
@@ -17,8 +18,10 @@ process imeta_study {
 
     script:
     String run_id_cmd = (run_id) ? "--run_id ${run_id}" : ""
+    String manual_qc_cmd = (filter_manual_qc) ? "" : "--include_failing_samples"
+
     String template = """
-    python $workflow.projectDir/bin/imeta_study.py --baton \$BATON_PATH --study_id ${study_id} %s
+    python $workflow.projectDir/bin/imeta_study.py --baton \$BATON_PATH --study_id ${study_id} %s %s
     awk '!a[\$2]++' samples.tsv > samples_noduplicates.tsv
 
     # Save work dir so that it can be removed onComplete of workflow, 
@@ -26,6 +29,6 @@ process imeta_study {
     # in case new sequencing samples are ready: 
     WORK_DIR=\$PWD
     """
-    String.format(template, run_id_cmd)
+
+    String.format(template, run_id_cmd, manual_qc_cmd)
 }
-// awk removes duplicates as one sanger sample can have several run_id

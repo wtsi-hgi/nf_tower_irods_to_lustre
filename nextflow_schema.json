@@ -66,6 +66,13 @@
                     "format": "directory-path",
                     "description": "The directory where the pipeline reports will be saved. You have to use absolute paths",
                     "fa_icon": "fas fa-folder-open"
+                },
+                "copy_mode": {
+                    "type": "string",
+                    "enum": ["rellink", "symlink", "move", "copy"],
+                    "default": "copy",
+                    "description": "The method to use for publishing files into output folder",
+                    "fa_icon": "fas fa-clone"
                 }
             }
         },
@@ -80,6 +87,12 @@
                     "description": "Set to true if run_mode is study_id otherwise set to false",
                     "default": false,
                     "fa_icon": "fas fa-angle-double-right"
+                },
+                "filter_manual_qc": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Include `manual_qc = 1` into iRODS query",
+                    "help_text": "Disable if you want to include samples failing sequencing QC"
                 },
                 "input_studies": {
                     "type": "string",
