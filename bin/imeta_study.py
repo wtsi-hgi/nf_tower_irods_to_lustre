@@ -6,8 +6,8 @@ from baton.api import connect_to_irods_with_baton
 from baton.models import DataObject, SearchCriterion, ComparisonOperator
 
 logging.basicConfig(level=logging.INFO)
-fields_to_extract = ('sample', 'study_id', 'id_run', 'lane', 'is_paired_read', 'alignment',
-                     'tag_index', 'total_reads', 'md5', 'sample_supplier_name', 'study')
+fields_to_extract = ['sample', 'study_id', 'id_run', 'lane', 'is_paired_read', 'alignment',
+                     'tag_index', 'total_reads', 'md5', 'sample_supplier_name', 'study']
 
 
 def read_args():
@@ -15,6 +15,8 @@ def read_args():
     parser.add_argument('--baton', required=True, type=str, help='Path to folder with baton binaries')
     parser.add_argument('--study_id', required=True, type=int)
     parser.add_argument('--run_id', type=int, nargs='*')
+    parser.add_argument('--include_failing_samples', action="store_true", default=False,
+                        help="Include samples failing sequencing QC (i.e. remove `manual_qc = 1` from iRODS query)")
     parser.add_argument('--dev', action='store_true', help='Query dev zone')
     parser.add_argument('--outdir', default='./')
     args = parser.parse_args()
@@ -22,7 +24,8 @@ def read_args():
     return args
 
 
-def submit_baton_query(bins: str, study_id: int, run_ids: List[int] = None, dev=False) -> List[DataObject]:
+def submit_baton_query(bins: str, study_id: int, run_ids: List[int] = None,
+                       failing_samples=False, dev=False) -> List[DataObject]:
     """
     Search iRODS objects for specified study and/or run
     """
@@ -45,10 +48,14 @@ def submit_baton_query(bins: str, study_id: int, run_ids: List[int] = None, dev=
     zone = 'seq-dev' if dev else 'seq'
     out = irods.data_object.get_by_metadata(search_criterions, zone=zone, load_metadata=True)
 
+    if failing_samples:
+        fields_to_extract.append('manual_qc')
+    else:
+        logging.info('Filtering baton output by manual_qc = 1')
+
     data = []
-    logging.info('Filtering baton output by manual_qc = 1')
     for data_object in out:
-        if data_object.metadata.get("manual_qc") == {'1'}:
+        if failing_samples or data_object.metadata.get("manual_qc") == {'1'}:
             data.append(data_object)
 
     if run_ids is not None:
@@ -95,7 +102,7 @@ def save_data(data, outfile: str):
 
 def main():
     args = read_args()
-    data = submit_baton_query(args.baton, args.study_id, args.run_id, args.dev)
+    data = submit_baton_query(args.baton, args.study_id, args.run_id, args.include_failing_samples, args.dev)
     validate_sanity(data)
     metadata = extract_metadata(data)
     save_data(metadata, outfile=os.path.join(args.outdir, 'samples.tsv'))

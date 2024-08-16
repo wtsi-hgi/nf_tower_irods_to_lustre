@@ -23,11 +23,12 @@ if (params.run_crams_to_fastq & !params.run_merge_crams) {
 workflow {
 
     if (params.run_mode == "study_id") {
-        if (params.input_study_runs) {
-            imeta_study(params.input_studies, params.input_study_runs)
-        } else {
-            imeta_study(params.input_studies, [])
-        }
+		if (!params.input_study_runs) {
+			params.input_study_runs = []
+		}
+
+		imeta_study(params.input_studies, params.input_study_runs, params.filter_manual_qc)
+
         samples_irods_tsv = imeta_study.out.irods_samples_tsv
         work_dir_to_remove = imeta_study.out.work_dir_to_remove
     }
