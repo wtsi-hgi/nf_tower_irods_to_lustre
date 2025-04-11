@@ -16,7 +16,7 @@ data_object = DataObject(
 
 
 @pytest.fixture(scope='session')
-def baton_bins(conf='confs/sanger.conf') -> str:
+def baton_bins(conf='confs/hgi.conf') -> str:
     with open(conf) as f:
         for line in f:
             if 'BATON_PATH' in line:
