@@ -11,8 +11,9 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = 7777
+                input[0] = 9999  // No such study
                 input[1] = []
+                input[2] = true
                 """
             }
         }
@@ -31,6 +32,7 @@ nextflow_process {
                 """
                 input[0] = 6900
                 input[1] = []
+                input[2] = true
                 """
             }
         }
@@ -54,6 +56,7 @@ nextflow_process {
                 """
                 input[0] = 6900
                 input[1] = 45347
+                input[2] = true
                 """
             }
         }
@@ -63,6 +66,30 @@ nextflow_process {
                 assert size() == 2
                 assert get(0) == study_id
                 assert path(get(1)).readLines().size() == 143
+            }
+        }
+    }
+
+    test("Should run without failures and produce samples.tsv for 1 run with failed samples") {
+        def study_id = 5000
+        when {
+            params {
+                run_imeta_study = true
+            }
+            process {
+                """
+                input[0] = 5000
+                input[1] = 28048
+                input[2] = false
+                """
+            }
+        }
+        then {
+            assert process.success
+            with (process.out.irods_samples_tsv.get(0)) {
+                assert size() == 2
+                assert get(0) == study_id
+                assert path(get(1)).readLines().size() == 193
             }
         }
     }

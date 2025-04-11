@@ -8,7 +8,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = tuple ['id': 'test'], file("tests/data/small.cram")
+                input[0] = tuple ['id': 'test'], file("${projectDir}/tests/data/small.cram")
                 """
             }
         }

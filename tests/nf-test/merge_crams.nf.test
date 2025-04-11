@@ -13,7 +13,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = tuple [study_id: 7777, id: 'dummy_sample'], file("tests/data/small.cram")
+                input[0] = tuple [study_id: 7777, id: 'dummy_sample'], file("${projectDir}/tests/data/small.cram")
                 """
             }
         }

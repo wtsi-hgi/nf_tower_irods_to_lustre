@@ -12,7 +12,7 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = Channel.of( [study_id: 777, id: 'test'] )
-                                  .combine( Channel.fromPath('tests/data/small.cram') )
+                                  .combine( Channel.fromPath('${projectDir}/tests/data/small.cram') )
                 """
             }
         }
