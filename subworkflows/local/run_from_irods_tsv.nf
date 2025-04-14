@@ -11,7 +11,8 @@ def create_input_channel(channel_samples_tsv) {
     channel_samples_tsv
         .splitCsv(header: true, sep: '\t')
         .map{ row -> tuple(
-            [study_id: row.study_id, id: row.sample] + (row.is_paired_read ? [single_end: !row.is_paired_read.toBoolean()] : [:]),
+            [study_id: row.study_id, id: row.sample, n_reads: row.total_reads.toInteger()] +
+            	(row.is_paired_read ? [single_end: !row.is_paired_read.toBoolean()] : [:]),
             row.object
         ) }
         .filter { it[1] =~ /.cram$/ }
@@ -33,6 +34,8 @@ workflow run_from_irods_tsv {
     }
 
     input = create_input_channel(channel_samples_tsv)
+
+    input.view()
 
     // task to iget all Irods cram files of all samples
     iget_study_cram(input)

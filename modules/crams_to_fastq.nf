@@ -2,9 +2,15 @@ process crams_to_fastq {
     tag "${meta.id}"
     publishDir "${params.fastq_dir}", mode: "${params.copy_mode}", overwrite: true, pattern: "*.fastq.gz"
 
+    cpus = 6
+    memory = {
+        sizeInMB = (1000 + (meta.n_reads / 1e5).toInteger()) * task.attempt
+        return sizeInMB + ' MB'
+	}
+
     when: 
         params.run_crams_to_fastq
-    
+
     input:
         tuple val(meta), path(cramfile)
 

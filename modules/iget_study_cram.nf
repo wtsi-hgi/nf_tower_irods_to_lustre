@@ -1,7 +1,10 @@
 process 'iget_study_cram' {
     tag "$meta.id:$cram_irods_object"
     publishDir "${params.cram_output_dir}", mode: "${params.copy_mode}"
-    
+
+    cpus = 1
+    memory = { 512.MB * task.attempt }
+
     when: 
     params.run_iget_study_cram
 

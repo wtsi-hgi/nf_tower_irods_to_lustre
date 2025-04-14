@@ -1,6 +1,9 @@
 process SAMTOOLS_COUNT {
     tag "$meta.id"
 
+    cpus = 1
+    memory = { 512.MB * task.attempt }
+
     input:
         tuple val(meta), path(cram)
 
