@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/wtsi-hgi/nf_tower_irods_to_lustre/master/assets/schema_input.json",
+  "title": "irods_to_lustre pipeline - params.input_samples_csv schema",
+  "description": "Schema for the file provided with params.input_samples_csv",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "object": {
+        "type": "string",
+        "format": "file-path",
+        "pattern": "^/seq/\\S+\\.cram$",
+        "errorMessage": "CRAM file must be provided, cannot contain spaces and must have extension '.cram'"
+      },
+      "sample": {
+        "type": "string",
+        "pattern": "^\\S+$",
+        "errorMessage": "Sample name must be provided and cannot contain spaces",
+        "meta": ["my_sample"]
+      },
+      "is_paired_read": {
+        "type": "boolean",
+        "errorMessage": "is_paired_read must be a boolean"
+      },
+      "total_reads": {
+        "type": "integer",
+        "meta": ["n_reads"],
+        "errorMessage": "Total reads must be provided and be a positive integer"
+      }
+    },
+    "required": ["object", "sample", "total_reads"]
+  }
+}

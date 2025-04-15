@@ -13,12 +13,17 @@ include { iget_study_cram } from './modules/iget_study_cram.nf'
 // include workflow common to all input modes:
 include { run_from_irods_tsv } from './subworkflows/local/run_from_irods_tsv.nf'
 
+include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
+validateParameters()
 
 // validate inputs
 if (params.run_crams_to_fastq & !params.run_merge_crams) {
 	printErr("Error: Crams must be merged prior to conversion to fastq. Enable `run_merge_crams` option")
 	exit 1
 }
+
+// Print summary of supplied parameters
+log.info paramsSummaryLog(workflow)
 
 workflow {
 
@@ -37,19 +42,6 @@ workflow {
         samples_irods_tsv = Channel.fromPath(params.input_samples_csv)
     }
     
-    else if (params.run_mode == "google_spreadsheet") {
-        i1 = Channel.from(params.input_gsheet_name)
-        i2 = Channel.fromPath(params.input_google_creds)
-        i3 = Channel.from(params.output_csv_name)
-        i31 = Channel.from(params.input_sheet_name)
-	
-        gsheet_to_csv(i1,i2,i3,i31)
-        i4 = Channel.from(params.google_spreadsheet_mode.input_gsheet_column)
-        imeta_samples_csv(gsheet_to_csv.out.samples_csv, i4)
-        samples_irods_tsv = imeta_samples_csv.out.irods_samples_tsv
-        work_dir_to_remove = imeta_samples_csv.out.work_dir_to_remove.mix(gsheet_to_csv.out.work_dir_to_remove)
-    }
-
     // common to all input modes:
     run_from_irods_tsv(samples_irods_tsv)
 
