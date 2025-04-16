@@ -16,12 +16,18 @@
       "sample": {
         "type": "string",
         "pattern": "^\\S+$",
+        "meta": ["id"],
         "errorMessage": "Sample name must be provided and cannot contain spaces"
+      },
+      "study_id": {
+        "type": "integer",
+        "meta": ["study_id"]
       },
       "is_paired_read": {
         "type": "integer",
         "minimum": 0,
         "maximum": 1,
+        "meta": ["is_paired_read"],
         "errorMessage": "is_paired_read must be a boolean"
       },
       "total_reads": {
@@ -30,7 +36,7 @@
         "errorMessage": "Total reads must be provided and be a positive integer"
       }
     },
-    "required": ["object", "sample", "total_reads"]
+    "required": ["object", "sample", "study_id", "total_reads"]
   },
   "allOf": [
     {"uniqueEntries": ["object"]}
