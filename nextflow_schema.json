@@ -12,13 +12,15 @@
             "description": "Define where the pipeline should find input data and save output data.",
             "required": [
                 "run_mode",
-                "outdir",
-                "copy_mode"
+                "outdir"
             ],
             "properties": {
                 "run_mode": {
                     "type": "string",
-                    "enum": ["csv_samples_id", "study_id"],
+                    "enum": [
+                        "csv_samples_id",
+                        "study_id"
+                    ],
                     "description": "Choose between csv_samples_id(file of iRODS paths),study_id(one or more iRODS study_ids)",
                     "fa_icon": "fas fa-angle-double-right"
                 },
@@ -59,7 +61,12 @@
                 },
                 "copy_mode": {
                     "type": "string",
-                    "enum": ["rellink", "symlink", "move", "copy"],
+                    "enum": [
+                        "rellink",
+                        "symlink",
+                        "move",
+                        "copy"
+                    ],
                     "default": "copy",
                     "description": "The method to use for publishing files into output folder",
                     "fa_icon": "fas fa-clone"
@@ -81,6 +88,7 @@
                 "crams_to_fastq_min_reads": {
                     "type": "integer",
                     "description": "minimum number of reads in merged cram file to try and convert to fastq.gz",
+                    "default": 1000,
                     "fa_icon": "fas fa-gear"
                 }
             }
@@ -98,15 +106,13 @@
                     "help_text": "Disable if you want to include samples failing sequencing QC"
                 },
                 "input_studies": {
-                    "type": "string",
+                    "type": "integer",
                     "description": "study_id to get CRAM files, will fail if multiple CRAMS per sample",
-                    "default": null,
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "input_study_runs": {
                     "type": "string",
                     "description": "Space-separated list of run ids. Leave blank if you want to extract all samples",
-                    "default": null,
                     "fa_icon": "fas fa-angle-double-right"
                 }
             }
@@ -121,7 +127,8 @@
                     "type": "string",
                     "description": "TSV with samples and iRODS path, required for csv_samples_id mode, otherwise leave as default, which shows format",
                     "schema": "assets/schema_input.json",
-                    "fa_icon": "fas fa-file-csv"
+                    "fa_icon": "fas fa-file-csv",
+                    "format": "file-path"
                 },
                 "input_samples_csv_column": {
                     "type": "string",
@@ -140,7 +147,6 @@
                 "run_imeta_study": {
                     "type": "boolean",
                     "description": "Set to true if run_mode is study_id otherwise set to false",
-                    "default": false,
                     "fa_icon": "fas fa-fast-forward"
                 },
                 "run_iget_study_cram": {
@@ -152,13 +158,11 @@
                 "run_merge_crams": {
                     "type": "boolean",
                     "description": "Run task to merge crams of each sample",
-                    "default": false,
                     "fa_icon": "fas fa-fast-forward"
                 },
                 "run_crams_to_fastq": {
                     "type": "boolean",
                     "description": "Run task to convert merged crams of each sample to fastq",
-                    "default": false,
                     "fa_icon": "fas fa-fast-forward"
                 }
             }
@@ -234,11 +238,34 @@
                     "description": "Maximum amount of time that can be requested for any single job.",
                     "default": "240.h",
                     "fa_icon": "far fa-clock",
-                    "pattern": "^(\\d+\\.?\\s*(s|m|h|day)\\s*)+$",
+                    "pattern": "^(\\d+\\.?\\s*(s|m|h|d)\\s*)+$",
                     "hidden": true,
                     "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
                 }
             }
         }
-    }
+    },
+    "allOf": [
+        {
+            "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/pipeline_options"
+        },
+        {
+            "$ref": "#/$defs/study_options"
+        },
+        {
+            "$ref": "#/$defs/csv_options"
+        },
+        {
+            "$ref": "#/$defs/process_skipping_options"
+        },
+        {
+            "$ref": "#/$defs/institutional_config_options"
+        },
+        {
+            "$ref": "#/$defs/max_job_request_options"
+        }
+    ]
 }

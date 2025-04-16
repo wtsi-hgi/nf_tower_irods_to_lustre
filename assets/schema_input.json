@@ -16,11 +16,12 @@
       "sample": {
         "type": "string",
         "pattern": "^\\S+$",
-        "errorMessage": "Sample name must be provided and cannot contain spaces",
-        "meta": ["my_sample"]
+        "errorMessage": "Sample name must be provided and cannot contain spaces"
       },
       "is_paired_read": {
-        "type": "boolean",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1,
         "errorMessage": "is_paired_read must be a boolean"
       },
       "total_reads": {
@@ -30,5 +31,8 @@
       }
     },
     "required": ["object", "sample", "total_reads"]
-  }
+  },
+  "allOf": [
+    {"uniqueEntries": ["object"]}
+  ]
 }
