@@ -2,6 +2,9 @@ process merge_crams {
     tag "${meta.id}"
     publishDir "${params.merged_crams_dir}", mode: "${params.copy_mode}", overwrite: true, pattern: "${meta.id}_merged.cram"
 
+    cpus = 6
+    memory = { 1.GB * task.attempt }
+
     when:
         params.run_merge_crams
 

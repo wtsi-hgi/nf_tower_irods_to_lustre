@@ -3,6 +3,9 @@ process imeta_study {
     publishDir "${params.metadata_dir}", mode: 'copy', pattern: "samples.tsv", overwrite: true
     publishDir "${params.metadata_dir}", mode: 'copy', pattern: "samples_noduplicates.tsv", overwrite: true
 
+    cpus = 1
+    memory = { 100.MB * task.attempt }
+
     when: 
     params.run_imeta_study
 
