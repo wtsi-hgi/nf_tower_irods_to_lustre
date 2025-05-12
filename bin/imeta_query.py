@@ -33,7 +33,7 @@ def get_baton() -> str:
     :return: path to folder with baton binaries
     """
     try:
-        result = subprocess.run(['which', 'baton'], check=True, stdout=subprocess.PIPE, text=True)
+        result = subprocess.run(['which', 'baton-do'], check=True, stdout=subprocess.PIPE, text=True)
         baton_path = result.stdout.strip()
         return os.path.dirname(baton_path)
 
@@ -64,7 +64,7 @@ def make_baton_query(study_id: int = None, run_ids: List[int] = None, samples_fi
     if samples_file is not None:
         with open(samples_file) as f:
             samples = f.read().splitlines()
-        search_criterions.insert(0, SearchCriterion("sanger_sample_id", samples, ComparisonOperator.CONTAINS))
+        search_criterions.insert(0, SearchCriterion("sample", samples, ComparisonOperator.CONTAINS))
 
     return search_criterions
 

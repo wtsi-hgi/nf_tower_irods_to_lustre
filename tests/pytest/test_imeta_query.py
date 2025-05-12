@@ -20,12 +20,16 @@ data_object = DataObject(
 
 @pytest.fixture()
 def purge_path(monkeypatch):
-    monkeypatch.setenv("PATH", "")
+    paths = os.environ["PATH"].split(':')
+    baton_paths = [path for path in paths if path.find("baton") != -1]
+    for path in baton_paths:
+        paths.remove(path)
+    monkeypatch.setenv("PATH", ':'.join(paths))
 
 
 @pytest.fixture()
 def fake_baton(tmp_path, monkeypatch):
-    baton_path = tmp_path / "baton"
+    baton_path = tmp_path / "baton-do"
     baton_path.write_text("#!/bin/sh\necho 'Fake baton'")
     baton_path.chmod(baton_path.stat().st_mode | stat.S_IXUSR)
 
@@ -92,13 +96,16 @@ def test_submit_baton_query_samples(baton_bins, samples_file):
         ([data_object], nullcontext())
     ]
 )
-def test_validate_sanity(baton_bins, data, expectation):
+def test_validate_sanity(data, expectation):
     with expectation:
         validate_sanity(data)
 
 
 def test_extract_metadata():
     metadata = extract_metadata([data_object])
+    assert isinstance(metadata, list)
+    assert len(metadata) == 1
+    assert isinstance(metadata[0], list)
 
 
 if __name__ == '__main__':
