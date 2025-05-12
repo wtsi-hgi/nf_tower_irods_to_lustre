@@ -4,7 +4,7 @@ process crams_to_fastq {
 
     cpus = 6
     memory = {
-        sizeInMB = (1000 + (meta.n_reads / 1e5).toInteger()) * task.attempt
+        sizeInMB = (1000 + (meta.get('n_reads', 3e8) / 1e5).toInteger()) * task.attempt
         return sizeInMB + ' MB'
 	}
 

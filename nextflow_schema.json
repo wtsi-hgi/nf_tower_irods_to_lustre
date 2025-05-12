@@ -19,16 +19,18 @@
                     "type": "string",
                     "enum": [
                         "csv_samples_id",
+                        "samples_list",
                         "study_id"
                     ],
-                    "description": "Choose between csv_samples_id(file of iRODS paths),study_id(one or more iRODS study_ids)",
+                    "description": "Choose between csv_samples_id (file of iRODS paths), study_id (iRODS study_id) or samples_list (list of sanger_sample_ids)",
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The absolute path to output directory where the results will be saved",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "./results"
                 },
                 "metadata_dir": {
                     "type": "string",
@@ -133,12 +135,22 @@
                     "schema": "assets/schema_input.json",
                     "fa_icon": "fas fa-file-csv",
                     "format": "file-path"
-                },
-                "input_samples_csv_column": {
+                }
+            }
+        },
+        "samples_list_options": {
+            "title": "Samples list options",
+            "type": "object",
+            "fa_icon": "fas fa-fingerprint",
+            "description": "Define these options if you selected samples_list mode",
+            "properties": {
+                "input_samples_list": {
                     "type": "string",
-                    "description": "column header label with sample name",
-                    "default": "sample",
-                    "fa_icon": "fas fa-columns"
+                    "description": "File with sanger_sample_ids (one per line, no header)",
+                    "fa_icon": "fas fa-file",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain"
                 }
             }
         },
@@ -261,6 +273,9 @@
         },
         {
             "$ref": "#/$defs/csv_options"
+        },
+        {
+            "$ref": "#/$defs/samples_list_options"
         },
         {
             "$ref": "#/$defs/process_skipping_options"

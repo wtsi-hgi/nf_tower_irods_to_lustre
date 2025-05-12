@@ -13,7 +13,8 @@ nextflow_process {
                 """
                 input[0] = 9999  // No such study
                 input[1] = []
-                input[2] = true
+                input[2] = []
+                input[3] = true
                 """
             }
         }
@@ -23,6 +24,7 @@ nextflow_process {
     }
 
     test("Should run without failures and produce samples.tsv") {
+        tag "study_input"
         def study_id = 6900
         when {
             params {
@@ -32,7 +34,8 @@ nextflow_process {
                 """
                 input[0] = 6900
                 input[1] = []
-                input[2] = true
+                input[2] = []
+                input[3] = true
                 """
             }
         }
@@ -47,6 +50,7 @@ nextflow_process {
     }
 
     test("Should run without failures and produce samples.tsv for 1 run") {
+        tag "run_input"
         def study_id = 6900
         when {
             params {
@@ -56,7 +60,8 @@ nextflow_process {
                 """
                 input[0] = 6900
                 input[1] = 45347
-                input[2] = true
+                input[2] = []
+                input[3] = true
                 """
             }
         }
@@ -71,6 +76,7 @@ nextflow_process {
     }
 
     test("Should run without failures and produce samples.tsv for 1 run with failed samples") {
+        tag "run_input"
         def study_id = 5000
         when {
             params {
@@ -80,7 +86,8 @@ nextflow_process {
                 """
                 input[0] = 5000
                 input[1] = 28048
-                input[2] = false
+                input[2] = []
+                input[3] = false
                 """
             }
         }
@@ -90,6 +97,31 @@ nextflow_process {
                 assert size() == 2
                 assert get(0) == study_id
                 assert path(get(1)).readLines().size() == 193
+            }
+        }
+    }
+
+    test("Should run without failures if list of samples provided") {
+        tag "samples_input"
+        when {
+            params {
+                run_imeta_study = true
+            }
+            process {
+                """
+                input[0] = []
+                input[1] = []
+                input[2] = file("${projectDir}/tests/data/samples.txt")
+                input[3] = false
+                """
+            }
+        }
+        then {
+            assert process.success
+            with (process.out.irods_samples_tsv.get(0)) {
+                assert size() == 2
+                assert get(0) == []
+                assert path(get(1)).readLines().size() == 3
             }
         }
     }
