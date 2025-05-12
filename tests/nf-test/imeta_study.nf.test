@@ -20,6 +20,7 @@ nextflow_process {
         }
         then {
             assert process.failed
+            assert process.stdout.any{ it.contains("No objects found in iRODS") }
         }
     }
 
@@ -32,7 +33,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = 6900
+                input[0] = ${study_id}
                 input[1] = []
                 input[2] = []
                 input[3] = true
@@ -58,7 +59,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = 6900
+                input[0] = ${study_id}
                 input[1] = 45347
                 input[2] = []
                 input[3] = true
@@ -84,7 +85,7 @@ nextflow_process {
             }
             process {
                 """
-                input[0] = 5000
+                input[0] = ${study_id}
                 input[1] = 28048
                 input[2] = []
                 input[3] = false

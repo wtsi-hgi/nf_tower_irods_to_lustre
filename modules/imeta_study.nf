@@ -27,7 +27,7 @@ process imeta_study {
     String manual_qc_cmd = (filter_manual_qc) ? "" : "--include_failing_samples"
 
     String template = """
-    python $workflow.projectDir/bin/imeta_query.py --baton \$BATON_PATH %s %s %s %s
+    python $workflow.projectDir/bin/imeta_query.py %s %s %s %s
     awk '!a[\$2]++' samples.tsv > samples_noduplicates.tsv
 
     # Save work dir so that it can be removed onComplete of workflow, 

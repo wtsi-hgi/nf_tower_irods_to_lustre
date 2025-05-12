@@ -130,8 +130,9 @@ def save_data(data, outfile: str):
 
 def main():
     args = read_args()
+    baton = args.baton if args.baton else get_baton()
     query = make_baton_query(study_id=args.study_id, run_ids=args.run_ids, samples_file=args.samples_file)
-    data = submit_baton_query(bins=args.baton, query=query, failing_samples=args.include_failing_samples, dev=args.dev)
+    data = submit_baton_query(bins=baton, query=query, failing_samples=args.include_failing_samples, dev=args.dev)
     validate_sanity(data)
     metadata = extract_metadata(data)
     save_data(metadata, outfile=os.path.join(args.outdir, 'samples.tsv'))

@@ -33,7 +33,7 @@ if (params.run_mode == "study_id") {
 
 if (params.run_mode == "study_id" || params.run_mode == "samples_list") {
 	if (!params.run_imeta_study) {
-		log.error "Please enable `run_imeta_study` option."
+		log.error "Please enable `run_imeta_study` option to query iRODS metadata."
 		exit 1
 	}
 }
