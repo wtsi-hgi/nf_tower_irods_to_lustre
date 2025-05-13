@@ -6,7 +6,7 @@ include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 include { IRODS_TO_LUSTRE } from './workflows/irods_to_lustre.nf'
 
 // validate inputs
-validateParameters()
+
 if (params.run_crams_to_fastq & !params.run_merge_crams) {
 	log.error "Crams must be merged prior to conversion to fastq. Enable `run_merge_crams` option."
 	exit 1
@@ -37,6 +37,8 @@ if (params.run_mode == "study_id" || params.run_mode == "samples_list") {
 		exit 1
 	}
 }
+
+validateParameters()
 
 // Print summary of supplied parameters
 log.info paramsSummaryLog(workflow)
