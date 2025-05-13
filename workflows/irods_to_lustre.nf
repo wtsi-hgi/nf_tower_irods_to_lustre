@@ -16,7 +16,8 @@ workflow IRODS_TO_LUSTRE {
     }
 
     else if (params.run_mode == "samples_list") {
-    	imeta_study([], [], params.input_samples_list, params.filter_manual_qc)
+        samples_list_ch = channel.fromPath(params.input_samples_list)
+    	imeta_study([], [], samples_list_ch, params.filter_manual_qc)
     	samples_irods_tsv = imeta_study.out.irods_samples_tsv.map{ sid, tsv -> tsv }
     }
 
