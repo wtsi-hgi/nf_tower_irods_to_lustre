@@ -1,15 +1,13 @@
-// import modules that depend on input mode:
+// import modules and subworkflows
 include { imeta_study } from '../modules/imeta_study.nf'
-include { iget_study_cram } from '../modules/iget_study_cram.nf'
-
-// include workflow common to all input modes:
 include { run_from_irods_tsv } from '../subworkflows/local/run_from_irods_tsv.nf'
 
 workflow IRODS_TO_LUSTRE {
-    if (params.run_mode == "study_id") {
-		input_runs = (params.input_study_runs) ? params.input_study_runs : []
+    input_study = (params.input_studies) ? params.input_studies : []
+    input_runs = (params.input_study_runs) ? params.input_study_runs : []
 
-		imeta_study(params.input_studies, input_runs, [], params.filter_manual_qc)
+    if (params.run_mode == "study_id") {
+		imeta_study(input_study, input_runs, [], params.filter_manual_qc)
 
         samples_irods_tsv = imeta_study.out.irods_samples_tsv.map{ sid, tsv -> tsv }
         work_dir_to_remove = imeta_study.out.work_dir_to_remove
@@ -17,7 +15,7 @@ workflow IRODS_TO_LUSTRE {
 
     else if (params.run_mode == "samples_list") {
         samples_list_ch = channel.fromPath(params.input_samples_list)
-    	imeta_study([], [], samples_list_ch, params.filter_manual_qc)
+    	imeta_study(input_study, input_runs, samples_list_ch, params.filter_manual_qc)
     	samples_irods_tsv = imeta_study.out.irods_samples_tsv.map{ sid, tsv -> tsv }
     }
 

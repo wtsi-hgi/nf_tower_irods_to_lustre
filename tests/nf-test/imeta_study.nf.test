@@ -126,4 +126,29 @@ nextflow_process {
             }
         }
     }
+
+    test("Should run without failures if list of samples provided along with run_id") {
+        tag "samples_input"
+        when {
+            params {
+                run_imeta_study = true
+            }
+            process {
+                """
+                input[0] = []
+                input[1] = 18767
+                input[2] = file("${projectDir}/tests/data/samples2.txt")
+                input[3] = false
+                """
+            }
+        }
+        then {
+            assert process.success
+            with (process.out.irods_samples_tsv.get(0)) {
+                assert size() == 2
+                assert get(0) == []
+                assert path(get(1)).readLines().size() == 2
+            }
+        }
+    }
 }

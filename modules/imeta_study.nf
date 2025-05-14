@@ -22,7 +22,7 @@ process imeta_study {
 
     script:
     String study_id_cmd = (study_id) ? "--study_id ${study_id}" : ""
-    String run_id_cmd = (run_id) ? "--run_id ${run_id}" : ""
+    String run_id_cmd = (run_id) ? "--run_ids ${run_id}" : ""
     String samples_file_cmd = (samples_file) ? "--samples_file ${samples_file}" : ""
     String manual_qc_cmd = (filter_manual_qc) ? "" : "--include_failing_samples"
 
