@@ -1,8 +1,6 @@
 nextflow.enable.dsl=2
 
-include { imeta_study_cellranger } from '../../modules/imeta_study_cellranger.nf'
 include { iget_study_cram } from '../../modules/iget_study_cram.nf'
-include { iget_study_cellranger } from '../../modules/iget_study_cellranger.nf'
 include { crams_to_fastq } from '../../modules/crams_to_fastq.nf'
 include { merge_crams } from '../../modules/merge_crams.nf'
 include { ANY_CRAM_TO_FASTQ } from './cram_to_fastq.nf'
@@ -26,10 +24,6 @@ workflow run_from_irods_tsv {
     take: channel_samples_tsv
     main:
 
-    if (params.run_mode == "study_id") {
-        channel_samples_tsv = channel_samples_tsv.map{ study_id, samples_tsv -> samples_tsv }
-    }
-
     input = create_input_channel(channel_samples_tsv)
 
     // task to iget all Irods cram files of all samples
@@ -37,7 +31,13 @@ workflow run_from_irods_tsv {
 
     // task to merge cram files of each sample
     // merge by study_id and sample (Irods sanger_sample_id)
-    merge_crams(iget_study_cram.out.study_sample_cram.groupTuple(by: 0))
+    merge_crams_input = iget_study_cram.out.study_sample_cram
+    	.map{meta, cram ->
+    		meta.remove('n_reads')
+    		[meta, cram]
+    	}
+    	.groupTuple(by: 0)
+    merge_crams(merge_crams_input)
 
     // collect cram paths
     merge_crams.out.info_file
