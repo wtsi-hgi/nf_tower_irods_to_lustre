@@ -1,3 +1,8 @@
+def makeCramFilename(String sampleName, String baseName) {
+	def fixedBaseName = baseName.replaceAll("#", "_")
+    return String.format("%s.%s.cram", sampleName, fixedBaseName)
+}
+
 process 'iget_study_cram' {
     tag "$meta.id:$cram_irods_object"
     publishDir "${params.cram_output_dir}", mode: "${params.copy_mode}"
@@ -16,10 +21,7 @@ process 'iget_study_cram' {
     tuple val(meta), path("*.cram"), path("*.crai"), emit: study_sample_cram_crai optional true
 
     script:
-    def sample = meta.id
-    def filename = file(cram_irods_object).baseName
-    def (parsed, prefix, cell_parsed) = (filename =~ /([\d_]+)#(\d+)/)[0]
-    def outname = String.format("%s.%s_%s.cram", sample, prefix, cell_parsed)
+    def outname = makeCramFilename(meta.id, file(cram_irods_object).baseName)
     """
     iget -K -f -I -v ${cram_irods_object} ${outname}
     # get index file if exists:

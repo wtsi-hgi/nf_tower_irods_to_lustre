@@ -1,4 +1,7 @@
 ## [Unreleased]
+### Fixed
+- Pipeline can now download cram files without plex number
+
 ### Added
 - `--help` option
 - New `samples_list` mode to pull samples by list of sample names.
@@ -6,7 +9,7 @@
 
 ### Changed
 - Dependencies for `imeta_query.py` script are now provided via SoftPack environment.
-- Main logic moved to a named workflow.
+- The main logic moved to a named workflow.
 
 ### Removed
 - Unused scripts and code.
