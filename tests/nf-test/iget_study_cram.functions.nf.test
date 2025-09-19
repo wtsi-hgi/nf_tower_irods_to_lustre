@@ -1,0 +1,38 @@
+nextflow_function {
+
+    name "Test Function makeCramFilename"
+    script "modules/iget_study_cram.nf"
+    function "makeCramFilename"
+
+    test("Should work for regular files") {
+		when {
+		  function {
+			"""
+			input[0] = "testSample"
+			input[1] = "10754_1#20"
+			"""
+		  }
+		}
+
+		then {
+		  assert function.success
+		  assert function.result == "testSample.10754_1_20.cram"
+		}
+    }
+
+    test("Should work for unusual files") {
+    	when {
+		  function {
+			"""
+			input[0] = "testSample"
+			input[1] = "50608_1"
+			"""
+		  }
+		}
+
+		then {
+		  assert function.success
+		  assert function.result == "testSample.50608_1.cram"
+		}
+    }
+}

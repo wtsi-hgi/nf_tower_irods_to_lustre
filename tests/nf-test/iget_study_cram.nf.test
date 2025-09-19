@@ -5,13 +5,15 @@ nextflow_process {
     process "iget_study_cram"
 
     test("Should run without failures and produce cram file") {
+        def study_id = 10754
+        def sample_id = 'dummy_sample'
         when {
             params {
                 run_iget_study_cram = true
             }
             process {
                 """
-                input[0] = tuple [study_id: 10754, id: 'dummy_sample'], '/seq/10754/10754_1#20.cram'
+                input[0] = tuple [study_id: ${study_id}, id: "${sample_id}"], '/seq/10754/10754_1#20.cram'
                 """
             }
         }
@@ -19,8 +21,8 @@ nextflow_process {
             assert process.success
             with (process.out.study_sample_cram.get(0)) {
                 assert size() == 2
-                assert get(0)['study_id'] == 10754
-                assert get(0)['id'] == 'dummy_sample'
+                assert get(0)['study_id'] == study_id
+                assert get(0)['id'] == sample_id
                 assert get(1) ==~ '.*/dummy_sample.10754_1_20.cram'
                 assert snapshot(get(1)).match()
             }

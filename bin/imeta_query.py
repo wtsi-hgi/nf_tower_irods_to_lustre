@@ -1,6 +1,8 @@
 import os.path
 import argparse
 import logging
+import subprocess
+
 from typing import List, Set
 from baton.api import connect_to_irods_with_baton
 from baton.models import DataObject, SearchCriterion, ComparisonOperator
@@ -12,9 +14,10 @@ fields_to_extract = ['sample', 'study_id', 'id_run', 'lane', 'is_paired_read', '
 
 def read_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--baton', required=True, type=str, help='Path to folder with baton binaries')
-    parser.add_argument('--study_id', required=True, type=int)
-    parser.add_argument('--run_id', type=int, nargs='*')
+    parser.add_argument('--baton', required=False, type=str, help='Path to folder with baton binaries')
+    parser.add_argument('--study_id', required=False, type=int)
+    parser.add_argument('--run_ids', type=int, nargs='*')
+    parser.add_argument('--samples_file', type=str, help='Path to file with list of sample names (one per line)')
     parser.add_argument('--include_failing_samples', action="store_true", default=False,
                         help="Include samples failing sequencing QC (i.e. remove `manual_qc = 1` from iRODS query)")
     parser.add_argument('--dev', action='store_true', help='Query dev zone')
@@ -24,29 +27,57 @@ def read_args():
     return args
 
 
-def submit_baton_query(bins: str, study_id: int, run_ids: List[int] = None,
-                       failing_samples=False, dev=False) -> List[DataObject]:
+def get_baton() -> str:
     """
-    Search iRODS objects for specified study and/or run
+    Check if baton binaries are available
+    :return: path to folder with baton binaries
     """
-    irods = connect_to_irods_with_baton(bins, skip_baton_binaries_validation=True)
+    try:
+        result = subprocess.run(['which', 'baton-do'], check=True, stdout=subprocess.PIPE, text=True)
+        baton_path = result.stdout.strip()
+        return os.path.dirname(baton_path)
+
+    except subprocess.CalledProcessError:
+        raise FileNotFoundError("The 'baton' executable was not found in PATH.")
+
+
+def make_baton_query(study_id: int = None, run_ids: List[int] = None, samples_file: str = None):
+    if (study_id is None) == (samples_file is None):
+        raise ValueError("Either study_id or samples_file must be provided.")
 
     # The speed of this query is dependent on the order of the attributes
     search_criterions = [
-        SearchCriterion("study_id", str(study_id), ComparisonOperator.EQUALS),
         SearchCriterion("type", 'cram', ComparisonOperator.EQUALS),
         SearchCriterion("target", "1", ComparisonOperator.EQUALS)
     ]
     # adding this condition to the query slows down it drastically so doing post-filtering instead
     # SearchCriterion("manual_qc", "1", ComparisonOperator.EQUALS)
 
-    if run_ids is not None and len(run_ids) == 1:  # to speed up some queries
+    if study_id is not None:
+        search_criterions.insert(0, SearchCriterion("study_id", str(study_id), ComparisonOperator.EQUALS))
+
+    if run_ids is not None:
         search_criterions.append(
-            SearchCriterion("id_run", str(run_ids[0]), ComparisonOperator.EQUALS)
+            SearchCriterion("id_run", [str(x) for x in run_ids], ComparisonOperator.CONTAINS)
         )
 
+    if samples_file is not None:
+        with open(samples_file) as f:
+            samples = f.read().splitlines()
+        search_criterions.insert(0, SearchCriterion("sample", samples, ComparisonOperator.CONTAINS))
+
+    return search_criterions
+
+
+def submit_baton_query(bins: str, query: List[SearchCriterion],
+                       failing_samples=False, dev=False) -> List[DataObject]:
+    """
+    Search iRODS objects using specified query
+    """
+    irods = connect_to_irods_with_baton(bins, skip_baton_binaries_validation=True)
+
     zone = 'seq-dev' if dev else 'seq'
-    out = irods.data_object.get_by_metadata(search_criterions, zone=zone, load_metadata=True)
+    out = irods.data_object.get_by_metadata(query, zone=zone, load_metadata=True)
 
     if failing_samples:
         fields_to_extract.append('manual_qc')
@@ -57,9 +88,6 @@ def submit_baton_query(bins: str, study_id: int, run_ids: List[int] = None,
     for data_object in out:
         if failing_samples or data_object.metadata.get("manual_qc") == {'1'}:
             data.append(data_object)
-
-    if run_ids is not None:
-        data = [x for x in data if set(map(int, x.metadata.get('id_run', {}))).intersection(run_ids)]
 
     return data
 
@@ -102,7 +130,9 @@ def save_data(data, outfile: str):
 
 def main():
     args = read_args()
-    data = submit_baton_query(args.baton, args.study_id, args.run_id, args.include_failing_samples, args.dev)
+    baton = args.baton if args.baton else get_baton()
+    query = make_baton_query(study_id=args.study_id, run_ids=args.run_ids, samples_file=args.samples_file)
+    data = submit_baton_query(bins=baton, query=query, failing_samples=args.include_failing_samples, dev=args.dev)
     validate_sanity(data)
     metadata = extract_metadata(data)
     save_data(metadata, outfile=os.path.join(args.outdir, 'samples.tsv'))

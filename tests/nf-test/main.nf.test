@@ -1,0 +1,77 @@
+nextflow_pipeline {
+
+    name "Test the whole pipeline"
+    script "main.nf"
+
+    test("Pipeline validates options for study_id mode") {
+        tag "study_input"
+		when {
+            params {
+                run_mode = "study_id"
+            }
+        }
+
+        then {
+            assert workflow.failed
+            assert workflow.stdout.any { it.contains("Study ID must be provided") }
+        }
+    }
+
+    test("Pipeline validates options for study_id mode") {
+        tag "study_input"
+		when {
+            params {
+                run_mode = "study_id"
+                input_studies = 2984
+            }
+        }
+
+        then {
+            assert workflow.failed
+            assert workflow.stdout.any { it.contains("Please enable") }
+        }
+    }
+
+    test("Pipeline validates options for csv_samples_id mode") {
+		when {
+            params {
+                run_mode = "csv_samples_id"
+            }
+        }
+
+        then {
+            assert workflow.failed
+            assert workflow.stdout.any { it.contains("CSV file with input manifest must be provided") }
+        }
+    }
+
+    test("Pipeline validates options for samples_list mode") {
+        tag "samples_input"
+		when {
+            params {
+                run_mode = "samples_list"
+            }
+        }
+
+        then {
+            assert workflow.failed
+            assert workflow.stdout.any { it.contains("List of sample IDs must be provided") }
+        }
+    }
+
+	test("Pipeline validates options for samples_list mode") {
+        tag "samples_input"
+		when {
+            params {
+                run_mode = "samples_list"
+                input_samples_list = "${projectDir}/tests/data/samples.txt"
+            }
+        }
+
+        then {
+            assert workflow.failed
+            assert workflow.stdout.any { it.contains("Please enable") }
+        }
+    }
+
+}

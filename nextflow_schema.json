@@ -19,16 +19,18 @@
                     "type": "string",
                     "enum": [
                         "csv_samples_id",
+                        "samples_list",
                         "study_id"
                     ],
-                    "description": "Choose between csv_samples_id(file of iRODS paths),study_id(one or more iRODS study_ids)",
+                    "description": "Choose between csv_samples_id (file of iRODS paths), study_id (iRODS study_id) or samples_list (list of sanger_sample_ids)",
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The absolute path to output directory where the results will be saved",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "./results"
                 },
                 "metadata_dir": {
                     "type": "string",
@@ -102,12 +104,12 @@
                 "filter_manual_qc": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Exclude `manual_qc = 0` from iRODS query",
+                    "description": "Skip samples that fail NPG's manual QC (ie `manual_qc = 0`)",
                     "help_text": "Disable if you want to include samples failing sequencing QC"
                 },
                 "input_studies": {
                     "type": "integer",
-                    "description": "study_id to get CRAM files, will fail if multiple CRAMS per sample",
+                    "description": "study_id to get CRAM files from",
                     "fa_icon": "fas fa-angle-double-right"
                 },
                 "input_study_runs": {
@@ -116,7 +118,7 @@
                         "type": "number"
                     },
                     "uniqueItems": true,
-                    "description": "Space-separated list of run ids. Leave blank if you want to extract all samples",
+                    "description": "Space-separated list of run ids. Leave blank if you want to extract all samples for the study",
                     "fa_icon": "fas fa-angle-double-right"
                 }
             }
@@ -129,16 +131,26 @@
             "properties": {
                 "input_samples_csv": {
                     "type": "string",
-                    "description": "TSV with samples and iRODS path, required for csv_samples_id mode, otherwise leave as default, which shows format",
+                    "description": "TSV with samples and iRODS path, required for csv_samples_id mode, otherwise leave blanc",
                     "schema": "assets/schema_input.json",
                     "fa_icon": "fas fa-file-csv",
                     "format": "file-path"
-                },
-                "input_samples_csv_column": {
+                }
+            }
+        },
+        "samples_list_options": {
+            "title": "Samples list options",
+            "type": "object",
+            "fa_icon": "fas fa-fingerprint",
+            "description": "Define these options if you selected samples_list mode",
+            "properties": {
+                "input_samples_list": {
                     "type": "string",
-                    "description": "column header label with sample name",
-                    "default": "sample",
-                    "fa_icon": "fas fa-columns"
+                    "description": "File with sanger_sample_ids (one per line, no header)",
+                    "fa_icon": "fas fa-file",
+                    "format": "file-path",
+                    "exists": true,
+                    "mimetype": "text/plain"
                 }
             }
         },
@@ -150,7 +162,7 @@
             "properties": {
                 "run_imeta_study": {
                     "type": "boolean",
-                    "description": "Set to true if run_mode is study_id otherwise set to false",
+                    "description": "Set to true if run_mode is study_id or samples_list, otherwise set to false",
                     "fa_icon": "fas fa-fast-forward"
                 },
                 "run_iget_study_cram": {
@@ -261,6 +273,9 @@
         },
         {
             "$ref": "#/$defs/csv_options"
+        },
+        {
+            "$ref": "#/$defs/samples_list_options"
         },
         {
             "$ref": "#/$defs/process_skipping_options"

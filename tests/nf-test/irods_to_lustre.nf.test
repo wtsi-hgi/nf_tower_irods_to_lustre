@@ -1,0 +1,79 @@
+nextflow_workflow {
+
+    name "Test irods_to_lustre workflow"
+    script "workflows/irods_to_lustre.nf"
+    workflow "IRODS_TO_LUSTRE"
+
+    test("Should run without failures with study_id input") {
+        tag "study_input"
+		when {
+			params {
+				run_mode = "study_id"
+				input_studies = 3330
+				run_imeta_study = true
+				run_iget_study_cram = false
+			}
+		}
+		then {
+			assert workflow.success
+			assert workflow.trace.tasks().size() == 1
+		}
+	}
+
+    test("Should run without failures with run_id input") {
+        tag "run_input"
+		when {
+			params {
+				run_mode = "study_id"
+				input_studies = 7783
+				input_study_runs = 50078
+				run_imeta_study = true
+				run_merge_crams = true
+				run_crams_to_fastq = true
+			}
+		}
+		then {
+			assert workflow.success
+			assert workflow.trace.tasks().size() == 4
+		}
+	}
+
+	test("Should run without failures with samples list input") {
+        tag "samples_input"
+		when {
+			params {
+				run_mode = "samples_list"
+				input_samples_list = "${projectDir}/tests/data/samples.txt"
+				run_imeta_study = true
+				run_merge_crams = true
+				run_crams_to_fastq = true
+			}
+		}
+		then {
+			assert workflow.success
+			assert workflow.trace.tasks().size() == 4
+			assert file("${launchDir}/results/metadata/samples.tsv").readLines().size() == 3
+		}
+	}
+
+	test("Should run without failures with samples list input along with run_id") {
+        tag "samples_input"
+        tag "target"
+		when {
+			params {
+				run_mode = "samples_list"
+				input_samples_list = "${projectDir}/tests/data/samples2.txt"
+				input_study_runs = 18767
+				run_imeta_study = true
+				run_iget_study_cram = false
+				filter_manual_qc = false
+			}
+		}
+		then {
+			assert workflow.success
+			assert workflow.trace.tasks().size() == 1
+			assert file("${launchDir}/results/metadata/samples.tsv").readLines().size() == 2
+		}
+	}
+
+}
