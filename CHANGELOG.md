@@ -1,4 +1,4 @@
-## [Unreleased]
+## [0.3]
 ### Fixed
 - Pipeline can now download cram files without plex number
 
@@ -14,6 +14,6 @@
 ### Removed
 - Unused scripts and code.
 
-## [1.2.2] - 2024-08-16
+## [0.2.2] - 2024-08-16
 ### Added
 - `--filter_manual_qc` option to be able to include failing samples into the iRODS query.
